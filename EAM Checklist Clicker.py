@@ -18,19 +18,28 @@ def on_press(key):
 
 abort = False
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 # load targets
 try:
-    target_completed = Image.open('target_completed.png')
+    target_completed = Image.open(resource_path('target_completed.png'))
 except:
     print('Missing target_completed.png')
     abort = True
 try:
-    target_yes = Image.open('target_yes.png')
+    target_yes = Image.open(resource_path('target_yes.png'))
 except:
     print('Missing target_yes.png')
     abort = True
 try:
-    target_processing = Image.open('target_processing.png')
+    target_processing = Image.open(resource_path('target_processing.png'))
 except:
     print('Missing target_processing.png')
     abort = True

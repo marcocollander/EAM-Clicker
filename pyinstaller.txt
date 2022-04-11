@@ -1,6 +1,5 @@
-pyinstaller "EAM Checklist Clicker.py" --clean --onefile --paths='C:\Users\asynowie\AppData\Local\Programs\Python\Python310\lib\site-packages\cv2' --icon="EAM Checklist Clicker.ico"
-rmdir "EAM Checklist Clicker" /q /s
+pyinstaller --noconfirm --onefile --console --icon "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.ico" --clean --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_processing.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes.png;."  "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.py"
 rmdir "build" /q /s
 rmdir "__pycache__" /q /s
-ren "dist" "EAM Checklist Clicker"
-copy "target*.png" "EAM Checklist Clicker"
+move .\dist\*.exe .\ /Y
+rmdir "dist" /q /s

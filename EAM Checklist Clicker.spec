@@ -4,10 +4,10 @@
 block_cipher = None
 
 
-a = Analysis(['EAM Checklist Clicker.py'],
-             pathex=["'C:\\Users\\asynowie\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\cv2'"],
+a = Analysis(['C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.py'],
+             pathex=[],
              binaries=[],
-             datas=[],
+             datas=[('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_processing.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes.png', '.')],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -37,4 +37,4 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None , icon='EAM Checklist Clicker.ico')
+          entitlements_file=None , icon='C:\\Users\\asynowie\\Desktop\\EAM-Checklist-Clicker\\EAM Checklist Clicker.ico')
