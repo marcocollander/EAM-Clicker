@@ -26,28 +26,77 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-
+## DETERMINING SCALE
 # load targets
+print("Detecting scale...")
 try:
-    target_completed = Image.open(resource_path('target_completed.png'))
+    target_amazonrme = Image.open(resource_path('target_amazonrme.png'))
 except:
-    print('Missing target_completed.png')
+    print('Missing target_amazonrme.png')
     abort = True
-try:
-    target_yes = Image.open(resource_path('target_yes.png'))
-except:
-    print('Missing target_yes.png')
-    abort = True
-try:
-    target_processing = Image.open(resource_path('target_processing.png'))
-except:
-    print('Missing target_processing.png')
-    abort = True
+
     
 if abort:
     print('Missing target file(s). Aborting.')
     time.sleep(5)
     os._exit(0)
+
+scale = 0
+
+for i in range(100, 49, -1):
+    w, h = target_amazonrme.size
+    w = int(w*i/100)
+    h = int(h*i/100)
+    if auto.locateOnScreen(target_amazonrme.resize((w,h)), confidence = 0.95, grayscale = True) != None:
+        scale = i/100
+        break
+
+if scale == 0:
+    for i in range(100, 151, 1):
+        w, h = target_amazonrme.size
+        w = int(w*i/100)
+        h = int(h*i/100)
+        if auto.locateOnScreen(target_amazonrme.resize((w,h)), confidence = 0.95, grayscale = True) != None:
+            scale = i/100
+            break
+
+if scale > 0:
+    print('Closest scale found: ', i, '%')
+
+## DETERMINING LANGUAGE
+print("Detecting language...")
+languages = ['en', 'pl', 'de']
+abort = True
+for language in languages:
+    try:
+        target_completed = Image.open(resource_path('target_completed_'+language+'.png'))
+        target_completed = target_completed.resize((int(target_completed.width*scale),int(target_completed.height*scale)))
+    except:
+        print('Missing target_completed_'+language+'.png')
+        abort = True
+    try:
+        target_yes = Image.open(resource_path('target_yes_'+language+'.png'))
+        target_yes = target_yes.resize((int(target_yes.width*scale),int(target_yes.height*scale)))
+    except:
+        print('Missing target_yes_'+language+'.png')
+        abort = True
+    if auto.locateOnScreen(target_yes, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_completed, confidence = 0.8, grayscale = True) != None:
+        print('Language detected: ', language)
+        abort = False
+        break
+
+if abort:
+    print('Language not detected. Please open Checklist tab. Aborting.')
+    time.sleep(5)
+    os._exit(0)
+    
+try:
+    target_processing = Image.open(resource_path('target_processing.png'))
+    target_processing = target_processing.resize((int(target_processing.width*scale),int(target_processing.height*scale)))
+except:
+    print('Missing target_processing.png')
+    abort = True
+
 
 # keyboard listener
 listener = keyboard.Listener(on_press=on_press)
@@ -81,7 +130,7 @@ while True:
 
         # wait for checkboxes to appear (EAM sucks)
         for i in range(0,30):
-            if auto.locateOnScreen(target_completed, confidence = 0.85, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.85, grayscale = True) != None:
+            if auto.locateOnScreen(target_completed, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.8, grayscale = True) != None:
                 time.sleep(0.1)
                 if i != 0:
                     print('')
@@ -100,8 +149,8 @@ while True:
 
         
     # click everything on screen
-    target_list = list(auto.locateAllOnScreen(target_completed, confidence = 0.85, grayscale = True))
-    target_list += list(auto.locateAllOnScreen(target_yes, confidence = 0.85, grayscale = True))
+    target_list = list(auto.locateAllOnScreen(target_completed, confidence = 0.8, grayscale = True))
+    target_list += list(auto.locateAllOnScreen(target_yes, confidence = 0.8, grayscale = True))
 
     if target_list:
         for i in target_list:
