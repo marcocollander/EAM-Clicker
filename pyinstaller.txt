@@ -1,5 +1,5 @@
-pyinstaller --noconfirm --onefile --console --icon "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.ico" --clean --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_amazonrme.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_en.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_en.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_pl.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_pl.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_de.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_de.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_processing.png;."  "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.py"
-echo rmdir "build" /q /s
-echo rmdir "__pycache__" /q /s
-echo move .\dist\*.exe .\ /y
-echo rmdir "dist" /q /s
+pyinstaller --noconfirm --onefile --console --icon "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.ico" --clean --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_amazonrme.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_en.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_en.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_pl.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_pl.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_de.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_de.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_processing.png;." --add-data "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_checkbox_checked.png;."  "C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.py"
+rmdir "build" /q /s
+rmdir "__pycache__" /q /s
+move .\dist\*.exe .\ /y
+rmdir "dist" /q /s
