@@ -17,11 +17,14 @@ scrollCount = 0
 target_completed = None
 target_yes = None
 target_employee = None
+target_processing = None
+target_checkbox_checked = None
 scale = 0
 language = ''
 login = ''
 action = ''
 hours_worked = 1.0
+wait_after_processing = True
  
 ### KEYBOARD INTERRUPT
 def on_press(key):
@@ -135,7 +138,66 @@ def detect_language_BL():
 
     return lang
 
+### WAIT FOR PROCESSING
 
+def wait_for_processing(count):
+    global target_processing
+    global target_checkbox_checked
+    global target_completed
+    global target_yes
+    global wait_after_processing
+
+    if target_processing == None:
+        try:
+            target_processing = Image.open(resource_path('target_processing.png'))
+            target_processing = target_processing.resize((int(target_processing.width*scale*windowsScaling),int(target_processing.height*scale*windowsScaling)))
+        except:
+            auto.alert(text='Missing target_processing.png', title='EAM Checklist Clicker', button='OK')
+            os._exit(0)
+            
+    if target_checkbox_checked == None:   
+        try:
+            target_checkbox_checked = Image.open(resource_path('target_checkbox_checked.png'))
+            target_checkbox_checked = target_checkbox_checked.resize((int(target_checkbox_checked.width*scale*windowsScaling),int(target_checkbox_checked.height*scale*windowsScaling)))
+        except:
+            auto.alert(text='Missing target_checkbox_checked.png', title='EAM Checklist Clicker', button='OK')
+            os._exit(0)
+    
+    # wait for EAM processing
+    if wait_after_processing == True or auto.locateOnScreen(target_processing, confidence = 0.7) != None:
+        print('Waiting for EAM ', end='')
+        stdout.flush()
+        i = 0
+        while i < 3:
+            if auto.locateOnScreen(target_processing, confidence = 0.7) != None:
+                i = 0
+                retry = 0
+                scroll = 0
+            time.sleep(0.1)
+            print('.', end='')
+            stdout.flush()
+            i += 1
+        print('')
+        time.sleep(0.3)
+
+        # wait for checkboxes to appear (EAM sucks)
+        for i in range(0,count):
+            if auto.locateOnScreen(target_completed, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_checkbox_checked, confidence = 0.8, grayscale = True) != None:
+                time.sleep(0.05)
+                if i != 0:
+                    print('')
+                break
+            if i == 0:
+                print('Waiting for checkboxes ', end='')
+            else:
+                print('.', end='')
+                stdout.flush()
+                time.sleep(0.1)
+            if i == 29:
+                print('')
+                
+        wait_after_processing = False
+        #time.sleep(1)
 
 #################
 ### MAIN LOOP ###
@@ -143,6 +205,10 @@ def detect_language_BL():
 
 while action != 'Exit':
     action = auto.confirm(text='Starting. To exit press ESCAPE any time.', title='EAM Checklist Clicker', buttons=['Complete Checklist', 'Fill Book Labor', 'Exit'])
+    
+    # keyboard listener
+    listener = keyboard.Listener(on_press=on_press)
+    listener.start()
 
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 
@@ -156,26 +222,8 @@ while action != 'Exit':
 
         if language == '':
             language = detect_language()
-            
-        try:
-            target_processing = Image.open(resource_path('target_processing.png'))
-            target_processing = target_processing.resize((int(target_processing.width*scale*windowsScaling),int(target_processing.height*scale*windowsScaling)))
-        except:
-            auto.alert(text='Missing target_processing.png', title='EAM Checklist Clicker', button='OK')
-            os._exit(0)
-            
-        try:
-            target_checkbox_checked = Image.open(resource_path('target_checkbox_checked.png'))
-            target_checkbox_checked = target_checkbox_checked.resize((int(target_checkbox_checked.width*scale*windowsScaling),int(target_checkbox_checked.height*scale*windowsScaling)))
-            #print((int(target_checkbox_checked.width*scale*windowsScaling),int(target_checkbox_checked.height*scale*windowsScaling)))
-        except:
-            auto.alert(text='Missing target_checkbox_checked.png', title='EAM Checklist Clicker', button='OK')
-            os._exit(0)
-          
+                     
 
-        # keyboard listener
-        listener = keyboard.Listener(on_press=on_press)
-        listener.start()
 
         time.sleep(1)
         retry = 0
@@ -186,41 +234,7 @@ while action != 'Exit':
         loop_break = False
         while not loop_break:
 
-            # wait for EAM processing
-            if wait_after_processing == True or auto.locateOnScreen(target_processing, confidence = 0.7) != None:
-                print('Waiting for EAM ', end='')
-                stdout.flush()
-                i = 0
-                while i < 3:
-                    if auto.locateOnScreen(target_processing, confidence = 0.7) != None:
-                        i = 0
-                        retry = 0
-                        scroll = 0
-                    time.sleep(0.1)
-                    print('.', end='')
-                    stdout.flush()
-                    i += 1
-                print('')
-                time.sleep(0.3)
-
-                # wait for checkboxes to appear (EAM sucks)
-                for i in range(0,30):
-                    if auto.locateOnScreen(target_completed, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_checkbox_checked, confidence = 0.8, grayscale = True) != None:
-                        time.sleep(0.05)
-                        if i != 0:
-                            print('')
-                        break
-                    if i == 0:
-                        print('Waiting for checkboxes ', end='')
-                    else:
-                        print('.', end='')
-                        stdout.flush()
-                        time.sleep(0.1)
-                    if i == 29:
-                        print('')
-                        
-                wait_after_processing = False
-                #time.sleep(1)
+            wait_for_processing(30)
 
                 
             # click everything on screen
@@ -272,35 +286,52 @@ while action != 'Exit':
     ### BOOK LABOR LOOP ###
     #######################
     if action == 'Fill Book Labor':
-        if login == '':
-            login = auto.prompt(text='Login', title='EAM Book Labor Clicker', default='')
+            if login == '':
+                login = auto.prompt(text='Login', title='EAM Book Labor Clicker', default='')
 
-        hour_type = auto.confirm(text='Normal or overtime hours?', title='EAM Checklist Clicker', buttons=['Normal', 'Overtime'])[0]
-        
-        if scale == 0:
-            scale = detect_scale()
+            hours_type = auto.confirm(text='Normal or overtime hours?', title='EAM Book Labor Clicker', buttons=['Normal', 'Overtime'])[0]
+            
+            if scale == 0:
+                scale = detect_scale()
 
-        if language == '':
-            language = detect_language_BL()
+            if language == '':
+                language = detect_language_BL()
 
-        auto.click(auto.locateOnScreen(target_employee, confidence = 0.8, grayscale = True))
-        auto.write(login, interval=0.05)
-        auto.press('tab')
-        time.sleep(1)
-        auto.press('tab')
-        time.sleep(1)
-        auto.press('tab')
-        time.sleep(1)
-        auto.press('space')
-        time.sleep(1)
-        auto.press('tab')
-        time.sleep(3)
-        if hour_type != 'N':
-            auto.write(hour_type)
-            time.sleep(3)
-        auto.press('tab')
-        time.sleep(1)
-        auto.write(str(hours_worked))
+
+            while True:
+                hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.1', '0.25', '0.33', '0.5', '0.75', '1', '1.5', '2', 'Other', 'Exit'])
+                if hours_worked == 'Other':
+                    hours_worked = auto.prompt(text='Hours Worked', title='EAM Book Labor Clicker', default='')
+                elif hours_worked == 'Exit' or hours_worked == '':
+                    break
+
+                auto.click(auto.locateOnScreen(target_employee, confidence = 0.8, grayscale = True))
+                auto.write(login, interval=0.01)
+                auto.press('tab')
+                wait_for_processing(0)
+                time.sleep(0.5)
+                auto.press('tab')
+                time.sleep(0.25)
+                auto.press('tab')
+                time.sleep(0.25)
+                auto.press('backspace')
+                time.sleep(0.25)
+                auto.press('space')
+                wait_for_processing(0)
+                auto.press('tab')
+                time.sleep(0.5)
+                # add detecting confirmation prompt
+                if hours_type != 'N':
+                    auto.write(hours_type)
+                    wait_for_processing(0)
+                auto.press('tab')
+                time.sleep(0.25)
+                auto.press('tab')
+                time.sleep(0.25)
+                auto.write(str(hours_worked), interval=0.01)
+                time.sleep(0.25)
+                auto.press('enter')
+                wait_for_processing(0)
 
 # /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\
 
