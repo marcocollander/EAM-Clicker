@@ -114,7 +114,7 @@ def detect_language():
             auto.alert(text='Missing target_employee_'+lang+'.png', title='EAM Book Labor Clicker', button='OK')
             # os._exit(0)
         
-        if auto.locateOnScreen(target_yes, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_completed, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_employee, confidence = 0.8, grayscale = True) != None:
+        if auto.locateOnScreen(target_yes, confidence = 0.7, grayscale = True) != None or auto.locateOnScreen(target_completed, confidence = 0.7, grayscale = True) != None or auto.locateOnScreen(target_employee, confidence = 0.7, grayscale = True) != None:
             print('Language detected: ', lang)
             return lang
 
@@ -187,7 +187,7 @@ def wait_for_processing(forceWaitProcessing = False, forceWaitCheckboxes = False
         j = 0
         while j < waitLoopCount and not stop_loop:
             j += 1
-            if auto.locateOnScreen(target_processing, confidence = 0.8, grayscale = True) != None:
+            if auto.locateOnScreen(target_processing, confidence = 0.7, grayscale = True) != None:
                 print('!', end='')
                 stdout.flush()
                 break
@@ -200,13 +200,13 @@ def wait_for_processing(forceWaitProcessing = False, forceWaitCheckboxes = False
     
     # wait for EAM processing / throbler to disappear
     #time.sleep(0.5)
-    if waitForProcessing == True or auto.locateOnScreen(target_processing, confidence = 0.8, grayscale = True) != None:
+    if waitForProcessing == True or auto.locateOnScreen(target_processing, confidence = 0.7, grayscale = True) != None:
         print('Waiting for EAM ', end='')
         stdout.flush()
         i = 0
         while i < 3 and not stop_loop:
             time.sleep(0.1)
-            if auto.locateOnScreen(target_processing, confidence = 0.8, grayscale = True) != None:
+            if auto.locateOnScreen(target_processing, confidence = 0.7, grayscale = True) != None:
                 print('.', end='')
                 stdout.flush()
                 i = 0
@@ -228,7 +228,7 @@ def wait_for_processing(forceWaitProcessing = False, forceWaitCheckboxes = False
         while (j < waitLoopCount or i < 3) and not stop_loop:
             j += 1
             #time.sleep(0.05)
-            if auto.locateOnScreen(target_completed, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.8, grayscale = True) != None or auto.locateOnScreen(target_checkbox_checked, confidence = 0.8, grayscale = True) != None:
+            if auto.locateOnScreen(target_completed, confidence = 0.7, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.7, grayscale = True) != None or auto.locateOnScreen(target_checkbox_checked, confidence = 0.7, grayscale = True) != None:
                 i += 1
                 print('!', end='')
                 stdout.flush()
@@ -247,7 +247,7 @@ def wait_for_processing(forceWaitProcessing = False, forceWaitCheckboxes = False
         while j < waitLoopCount and not stop_loop:
             time.sleep(0.1)
             j += 1
-            if auto.locateOnScreen(target_prompt_icon, confidence = 0.8, grayscale = True) == None:
+            if auto.locateOnScreen(target_prompt_icon, confidence = 0.7, grayscale = True) == None:
                 print('.', end='')
                 stdout.flush()
             else:
@@ -301,8 +301,8 @@ while action != 'Exit' and action != None:
                             
             # click everything on screen
             time.sleep(0.1)
-            target_list = list(auto.locateAllOnScreen(target_completed, confidence = 0.8, grayscale = True))
-            target_list += list(auto.locateAllOnScreen(target_yes, confidence = 0.8, grayscale = True))
+            target_list = list(auto.locateAllOnScreen(target_completed, confidence = 0.7, grayscale = True))
+            target_list += list(auto.locateAllOnScreen(target_yes, confidence = 0.7, grayscale = True))
 
             if target_list and not stop_loop:
                 for i in target_list:
@@ -393,7 +393,7 @@ while action != 'Exit' and action != None:
 
                 # Click on employee and type in login
                 try:
-                    auto.click(auto.locateOnScreen(target_employee, confidence = 0.8, grayscale = True))
+                    auto.click(auto.locateOnScreen(target_employee, confidence = 0.7, grayscale = True))
                     auto.write(login)
                 except:
                     auto.alert(text='Cannot find EMPTY Employee field!', title='EAM Book Labor Clicker', button='OK')
