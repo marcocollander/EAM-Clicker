@@ -4,10 +4,10 @@
 block_cipher = None
 
 
-a = Analysis(['C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/EAM Checklist Clicker.py'],
+a = Analysis(['EAM Checklist Clicker.py'],
              pathex=[],
              binaries=[],
-             datas=[('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_amazonrme.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_processing.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_checkbox_checked.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_prompt_icon.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_en.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_pl.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_yes_de.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_pl.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_en.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_completed_de.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_employee_pl.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_employee_en.png', '.'), ('C:/Users/asynowie/Desktop/EAM-Checklist-Clicker/target_employee_de.png', '.')],
+             datas=[('./targets/target_amazonrme.png', '.'), ('./targets/target_processing.png', '.'), ('./targets/target_checkbox_checked.png', '.'), ('./targets/target_prompt_icon.png', '.'), ('./targets/target_yes_en.png', '.'), ('./targets/target_yes_pl.png', '.'), ('./targets/target_yes_de.png', '.'), ('./targets/target_completed_pl.png', '.'), ('./targets/target_completed_en.png', '.'), ('./targets/target_completed_de.png', '.'), ('./targets/target_employee_pl.png', '.'), ('./targets/target_employee_en.png', '.'), ('./targets/target_employee_de.png', '.')],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -37,4 +37,4 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None , icon='C:\\Users\\asynowie\\Desktop\\EAM-Checklist-Clicker\\EAM Checklist Clicker.ico')
+          entitlements_file=None , icon='EAM Checklist Clicker.ico')
