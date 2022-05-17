@@ -8,6 +8,8 @@ from sys import stdout
 import os
 import ctypes
 
+
+## Global variables
 stop_loop = False
 abort = False
 windowsScaling = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
@@ -248,7 +250,6 @@ def wait_for_processing(forceWaitProcessing = False, forceWaitCheckboxes = False
             if auto.locateOnScreen(target_prompt_icon, confidence = 0.8, grayscale = True) == None:
                 print('.', end='')
                 stdout.flush()
-                i += 1
             else:
                 print('!')
                 time.sleep(0.1)
@@ -354,24 +355,35 @@ while action != 'Exit' and action != None:
     #######################
     elif action == 'Fill Book Labor':
 
-            if login == '':
-                login = auto.prompt(text='Login', title='EAM Book Labor Clicker', default=str(os.getlogin()).upper())
+            # prompt for login / default windows username
+            login = auto.prompt(text='Login', title='EAM Book Labor Clicker', default=str(os.getlogin()).upper())
             if login == None:
                 stop_loop = True
 
-
+            # ask for hours type
             hours_type = auto.confirm(text='Normal or overtime hours?', title='EAM Book Labor Clicker', buttons=['Normal', 'Overtime'])[0]
             if hours_type == None:
                 stop_loop = True
 
+            # ask for date
             date = auto.confirm(text='Date worked?', title='EAM Book Labor Clicker', buttons=['Today', 'Other'])[0]
             if date == 'O':
-                date = auto.prompt(text='Date in EAM format (i.e. 16-MAY-2022):', title='EAM Book Labor Clicker', default='')
+                while True and date != None:
+                    date = auto.prompt(text='Date in EAM format (i.e. 16-MAY-2022):', title='EAM Book Labor Clicker', default='')
+                    try:
+                        x = date.split('-')
+                        if int(x[0]) <= 31 and int(x[0]) > 0 and x[1].isalpha() and len(x[1]) == 3 and int(x[2]) > 2000 and int(x[2]) < 3000:
+                            break
+                    except:
+                        auto.alert(text='Wrong date format! Use EAM formatting i.e. 17-MAY-2022, 17-MAJ-2022 etc.', title='EAM Book Labor Clicker', button='OK')
+                        pass
             elif date == None:
                 stop_loop = True
-            
-            auto.alert(text='To stop action press ESCAPE.', title='EAM Book Labor Clicker')
 
+        
+            #auto.alert(text='To stop action press ESCAPE.', title='EAM Book Labor Clicker')
+
+            # start loop
             while login != None and hours_type != None and date != None and not stop_loop:
                 hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.1', '0.25', '0.33', '0.5', '0.75', '1', '1.5', '2', 'Other', 'Exit'])
                 if hours_worked == 'Other':
@@ -391,15 +403,15 @@ while action != 'Exit' and action != None:
                 # Jumpt to Crew / Departament
                 auto.press('tab')
                 #time.sleep(0.25)
-                wait_for_processing(forceWaitProcessing = True, waitLoopCount = 5, waitForProcessing = True)
+                wait_for_processing(forceWaitProcessing = True, waitLoopCount = 5)
 
                 # Jump to Trade
                 auto.press('tab')
-                time.sleep(0.1)
+                #time.sleep(0.1)
 
                 # Jumpt to Date
                 auto.press('tab')
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 
                 # Clear Date
                 auto.press('backspace')
@@ -412,15 +424,18 @@ while action != 'Exit' and action != None:
                 else:
                     auto.write(str(date))
                     
-                # Jump to Type of Hours 
+                # Jump to Type of Hours
+                
+                wait_for_processing(waitForProcessing = True)
+            
                 auto.press('tab')
-                wait_for_processing(forceWaitProcessing = True, waitLoopCount = 5, waitForProcessing = True, waitForPrompt = True)
+                wait_for_processing(forceWaitProcessing = False, waitLoopCount = 5, waitForProcessing = False, waitForPrompt = True)
             
 
                 # Type in hours type
                 if hours_type != 'N':
                     auto.write(hours_type)
-                    wait_for_processing(waitForProcessing = True)
+                    #wait_for_processing(waitForProcessing = True)
 
                 # Jump to COVID-19 Related (can be removed from EAM soon, remove if applicable)
                 # \/ \/ \/ \/ \/ \/
@@ -430,7 +445,7 @@ while action != 'Exit' and action != None:
 
                 # Jump to Hours and type in
                 auto.press('tab')
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 auto.write(str(hours_worked))
                 #time.sleep(0.25)
 
