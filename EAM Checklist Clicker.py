@@ -12,7 +12,7 @@ import ctypes
 ## Global variables
 stop_loop = False
 abort = False
-windowsScaling = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
+windowsScaling = 1 # ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100      # opencv is dpi sensitive
 scrollVPixels = 0
 target_completed = None
 target_yes = None
