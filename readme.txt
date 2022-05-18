@@ -1,7 +1,7 @@
-Download "EAM Clicker.exe" only.
+Download "EAM Clicker.exe" only. Currently supported languages: Polish, English, German. Works best with 1080p resolution or higher, 100% Windows Scaling and 100% browser zoom. There are some measures taken to compensate for different settings, but they might not always work as intended.
 
 How to use:
-1) Download "EAM Clicker.exe"
+1) Download "EAM Clicker.exe": https://github.com/aIeksancler/EAM-Clicker/blob/main/EAM%20Clicker.exe
 2) Open downloaded file.
 3) (optional) Right click on the file -> Pin to taskbar
 4) To complete checklists, open EAM on first WO, open Checklist tab and click Complete Checklist. Program will stop when all WOs are completed or if you press ESC.
