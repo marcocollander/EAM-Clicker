@@ -390,9 +390,9 @@ while action != 'Exit' and action != None:
                 if hours_worked == 'Other':
                     hours_worked = auto.prompt(text='Enter hours worked', title='EAM Book Labor Clicker', default=last_hours_worked_input)
                     last_hours_worked_input = hours_worked
-                    if not (float(hours_worked) > 0 and float(hours_worked) <= 11.5) or hours_worked == None:
+                    if not (float(hours_worked) >= -11.5 and float(hours_worked) <= 11.5) or hours_worked == None:
                         if hours_worked != None:
-                            auto.alert(text='Bad input! Hours must be 0 < h <= 11.5 !', title='EAM Book Labor Clicker', button='OK')
+                            auto.alert(text='Bad input! Hours must be -11.5 < h <= 11.5 !', title='EAM Book Labor Clicker', button='OK')
                         break
                         
                 elif hours_worked == 'Exit' or hours_worked == None:
