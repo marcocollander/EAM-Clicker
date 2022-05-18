@@ -77,7 +77,7 @@ def detect_scale():
     if scale > 0:
         print('Closest scale found: ', i, '%')
     else:
-        scale = int(auto.prompt(text='Cannot detect browser scaling. Enter manually (i.e. 100):', title='EAM Clicker', default = 0))/100
+        scale = int(auto.prompt(text='Cannot detect browser scaling. Enter manually (i.e. 100):', title='EAM Clicker', default = 100))/100
         if scale != None:
             return scale
         else:            
@@ -120,6 +120,8 @@ def detect_language():
             return lang
 
     lang = auto.confirm(text='Select language?', title='EAM Clicker', buttons=['en', 'pl', 'de'])
+    if lang == None:
+        return ''
     
     try:
         target_completed = Image.open(resource_path('target_completed_'+lang+'.png'))
