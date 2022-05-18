@@ -1,1 +1,1 @@
-Download "EAM Checklist Clicker.exe" only.
+Download "EAM Clicker.exe" only.
