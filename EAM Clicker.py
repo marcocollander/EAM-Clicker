@@ -7,6 +7,8 @@ import cv2
 from sys import stdout
 import os
 import ctypes
+from datetime import date, timedelta
+import locale
 
 
 ## Global variables
@@ -142,8 +144,15 @@ def detect_language():
         target_employee = target_employee.resize((int(target_employee.width*scale*windowsScaling),int(target_employee.height*scale*windowsScaling)))
     except:
         auto.alert(text='Missing target_employee_'+lang+'.png', title='EAM Book Labor Clicker', button='OK')
-        # os._exit(0)
-        
+        os._exit(0)
+
+    if lang == 'en':
+        locale.setlocale(locale.LC_TIME, 'en_US')
+    elif lang == 'pl':
+        locale.setlocale(locale.LC_TIME, 'pl_PL')
+    elif lang == 'de':
+        locale.setlocale(locale.LC_TIME, 'de_DE')
+    
     return lang
 
 
@@ -357,42 +366,58 @@ while action != 'Exit' and action != None:
     ### BOOK LABOR LOOP ###
     #######################
     elif action == 'Fill Book Labor':
+
+        while not stop_loop:    
             
             # prompt for login / default windows username
-            login = auto.prompt(text='Login', title='EAM Book Labor Clicker', default=str(os.getlogin()).upper())
+            login = auto.prompt(text='Login:', title='EAM Book Labor Clicker', default=str(os.getlogin()).upper())
             if login == None:
-                stop_loop = True
+                break
 
             # ask for hours type
-            hours_type = auto.confirm(text='Normal or overtime hours?', title='EAM Book Labor Clicker', buttons=['Normal', 'Overtime'])[0]
+            hours_type = auto.confirm(text='Normal or Overtime hours?', title='EAM Book Labor Clicker', buttons=['Normal', 'Overtime'])
             if hours_type == None:
-                stop_loop = True
+                break
+
+            hours_type = hours_type[0]
+
 
             # ask for date
-            date = auto.confirm(text='Date worked?', title='EAM Book Labor Clicker', buttons=['Today', 'Other'])[0]
-            if date == 'O':
-                while True and date != None:
-                    date = auto.prompt(text='Date in EAM format (i.e. 16-MAY-2022):', title='EAM Book Labor Clicker', default='')
-                    try:
-                        x = date.split('-')
-                        if int(x[0]) <= 31 and int(x[0]) > 0 and x[1].isalpha() and len(x[1]) == 3 and int(x[2]) > 2000 and int(x[2]) < 3000:
+            if True:
+                date_str = auto.confirm(text='Date worked?', title='EAM Book Labor Clicker', buttons=['Today', 'Other'])[0]
+                if date_str == 'O':
+                    while date_str != None:
+                        yesterday = date.today() - timedelta(days=1)
+                        yesterday = yesterday.strftime('%d-%b-%Y').upper()
+                        date_str = auto.prompt(text='Date in EAM format (i.e. ' + yesterday + '):', title='EAM Book Labor Clicker', default=yesterday)
+                        if date_str == None:
                             break
-                    except:
-                        auto.alert(text='Wrong date format! Use EAM formatting i.e. 17-MAY-2022, 17-MAJ-2022 etc.', title='EAM Book Labor Clicker', button='OK')
-                        pass
-            elif date == None:
-                stop_loop = True
-
+                        try:
+                            x = date_str.split('-')
+                            if int(x[0]) <= 31 and int(x[0]) > 0 and x[1].isalpha() and len(x[1]) == 3 and int(x[2]) > 2000 and int(x[2]) < 3000:
+                                break
+                        except:
+                            auto.alert(text='Wrong date format! Use EAM formatting i.e. ' + yesterday + ' etc.', title='EAM Book Labor Clicker', button='OK')
+                elif date_str == 'T':
+                    pass
+                else:
+                    break
+            else:
+                break
 
             last_hours_worked_input = '0'
         
             # start loop
-            while login != None and hours_type != None and date != None and not stop_loop:
-                hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.1', '0.25', '0.33', '0.5', '0.75', '1', '1.5', '2', 'Other', 'Exit'])
+            while login != None and hours_type != None and date_str != None and not stop_loop:
+                if last_hours_worked_input != '0':
+                    hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', str(float(last_hours_worked_input)), 'Other', 'Exit'])
+                else:
+                    hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', 'Other', 'Exit'])
+                    
                 if hours_worked == 'Other':
                     hours_worked = auto.prompt(text='Enter hours worked', title='EAM Book Labor Clicker', default=last_hours_worked_input)
                     last_hours_worked_input = hours_worked
-                    if not (float(hours_worked) >= -11.5 and float(hours_worked) <= 11.5) or hours_worked == None:
+                    if not (float(hours_worked) >= -11.5 and float(hours_worked) <= 11.5 and float(hours_worked) != 0) or hours_worked == None:
                         if hours_worked != None:
                             auto.alert(text='Bad input! Hours must be -11.5 < h <= 11.5 !', title='EAM Book Labor Clicker', button='OK')
                         break
@@ -433,11 +458,11 @@ while action != 'Exit' and action != None:
                 #time.sleep(0.25)
 
                 # Enter new date
-                if date == 'T':
+                if date_str == 'T':
                     auto.press('space')
                     #wait_for_processing(waitForProcessing = True)
                 else:
-                    auto.write(str(date))
+                    auto.write(str(date_str))
                     
                 # Jump to Type of Hours
                 
@@ -470,7 +495,9 @@ while action != 'Exit' and action != None:
                 # Save
                 auto.press('enter')
                 wait_for_processing(waitForProcessing = True)
-                time.sleep(1)
+                time.sleep(0.5)
+
+            break
 
 # /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\
 
