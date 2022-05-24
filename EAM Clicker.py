@@ -282,7 +282,7 @@ listener.start()
 while action != 'Exit' and action != None:
 
     stop_loop = False
-    action = auto.confirm(text='Select action:', title='EAM Clicker', buttons=['Complete Checklist', 'Fill Book Labor', 'Exit'])
+    action = auto.confirm(text='Select action:', title='EAM Clicker 4.2.2', buttons=['Complete Checklist', 'Fill Book Labor', 'Exit'])
    
 
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
