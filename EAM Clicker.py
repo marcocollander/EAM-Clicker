@@ -230,7 +230,7 @@ def wait_for_processing(forceWaitProcessing = False, forceWaitCheckboxes = False
         j = 0
         while (j < waitLoopCount or i < 3) and not stop_loop:
             j += 1
-            #time.sleep(0.05)
+            time.sleep(0.1)
             if auto.locateOnScreen(target_completed, confidence = 0.9, grayscale = True) != None or auto.locateOnScreen(target_yes, confidence = 0.9, grayscale = True) != None or auto.locateOnScreen(target_checkbox_checked, confidence = 0.9, grayscale = True) != None:
                 i += 1
                 print('!', end='')
@@ -321,7 +321,7 @@ while action != 'Exit' and action != None:
                 if scroll == maxScrolls:
                     print('Next please')
                     auto.hotkey('ctrl', 'down')
-                    if wait_for_processing(waitForProcessing = True, waitLoopCount = 30):
+                    if wait_for_processing(waitForProcessing = True, waitLoopCount = 30, forceWaitCheckboxes = True):
                         scroll = 0
                         retry = 0
                     #time.sleep(1)
