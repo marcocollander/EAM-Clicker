@@ -27,6 +27,7 @@ language = ''
 login = ''
 action = ''
 hours_worked = 1.0
+total_hours_worked = 0
 wait_after_processing = True
 maxScrolls = 1
  
@@ -123,7 +124,7 @@ def detect_language():
 
     lang = auto.confirm(text='What is your EAM language?', title='EAM Clicker', buttons=['en', 'pl', 'de'])
     if lang == None:
-        return ''
+        os._exit(0)
     
     try:
         target_completed = Image.open(resource_path('target_completed_'+lang+'.png'))
@@ -370,9 +371,12 @@ while action != 'Exit' and action != None:
         while not stop_loop:    
             
             # prompt for login / default windows username
-            login = auto.prompt(text='Login:', title='EAM Book Labor Clicker', default=str(os.getlogin()).upper())
+            windows_login = str(os.getlogin()).upper()
+            login = auto.prompt(text='Login:', title='EAM Book Labor Clicker', default=windows_login)
             if login == None:
                 break
+
+            total_hours_worked = 0
 
             # ask for hours type
             hours_type = auto.confirm(text='Normal or Overtime hours?', title='EAM Book Labor Clicker', buttons=['Normal', 'Overtime'])
@@ -409,10 +413,16 @@ while action != 'Exit' and action != None:
         
             # start loop
             while login != None and hours_type != None and date_str != None and not stop_loop:
-                if last_hours_worked_input != '0':
-                    hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', str(float(last_hours_worked_input)), 'Other', 'Exit'])
+
+                if total_hours_worked != 0:
+                    confirm_text = 'How many hours? Currently booked: ' + str(total_hours_worked) + ' hours.'
                 else:
-                    hours_worked = auto.confirm(text='How many hours?', title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', 'Other', 'Exit'])
+                    confirm_text = 'How many hours?'
+                
+                if last_hours_worked_input != '0':
+                    hours_worked = auto.confirm(text=confirm_text, title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', str(float(last_hours_worked_input)), 'Other', 'Exit'])
+                else:
+                    hours_worked = auto.confirm(text=confirm_text, title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', 'Other', 'Exit'])
                     
                 if hours_worked == 'Other':
                     hours_worked = auto.prompt(text='Enter hours worked', title='EAM Book Labor Clicker', default=last_hours_worked_input)
@@ -495,8 +505,10 @@ while action != 'Exit' and action != None:
                 # Save
                 auto.press('enter')
                 wait_for_processing(waitForProcessing = True)
+                total_hours_worked += float(hours_worked)
                 time.sleep(0.5)
 
+            auto.alert(title='EAM Book Labor Clicker', text = 'Booked ' + str(total_hours_worked) + ' hours.', button='OK')
             break
 
 # /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\
