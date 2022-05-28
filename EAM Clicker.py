@@ -313,7 +313,7 @@ listener.start()
 while action != 'Exit' and action != None:
 
     stop_loop = False
-    action = auto.confirm(text='Select action:', title='EAM Clicker 4.3', buttons=['Complete Checklist', 'Fill Book Labor', 'Exit'])
+    action = auto.confirm(text='Select action:', title='EAM Clicker 4.3.1', buttons=['Complete Checklist', 'Fill Book Labor', 'Exit'])
    
 
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
@@ -438,9 +438,9 @@ while action != 'Exit' and action != None:
             while login != None and hours_type != None and date_str != None and not stop_loop:
 
                 if total_hours_worked != 0:
-                    confirm_text = 'How many hours? Currently booked: ' + str(total_hours_worked) + ' hours.'
+                    confirm_text = 'How many hours for ' + str(login) + '? Currently booked: ' + str(total_hours_worked) + ' hours.'
                 else:
-                    confirm_text = 'How many hours?'
+                    confirm_text = 'How many hours for ' + str(login) + '?'
                 
                 if last_hours_worked_input != '0':
                     hours_worked = auto.confirm(text=confirm_text, title='EAM Book Labor Clicker', buttons=['0.25', '0.5', '0.75', '1', '1.5', '2', str(float(last_hours_worked_input)), 'Other', 'Exit'])
@@ -527,12 +527,13 @@ while action != 'Exit' and action != None:
                 #time.sleep(0.25)
 
                 # Save
-                auto.press('enter')
+                if not stop_loop:
+                    auto.press('enter')
                 wait_for_processing(waitForProcessing = True)
                 total_hours_worked += float(hours_worked)
                 time.sleep(0.5)
 
-            auto.alert(title='EAM Book Labor Clicker', text = 'Booked ' + str(total_hours_worked) + ' hours.', button='OK')
+            auto.alert(title='EAM Book Labor Clicker', text = 'Booked ' + str(total_hours_worked) + ' hours for ' + str(login) + '.', button='OK')
             break
 
 # /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\
