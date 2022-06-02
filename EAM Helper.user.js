@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name			EAM Clicker
-// @description			Clicker
-// @downloadURL			https://github.com/aIeksancler/EAM-Clicker/raw/master/EAM%20Helper.user.js
+// @description		EAM Clicker
+// @author			Olek
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
-// @version			2.01
+// @version			3
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
