@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        EAM Clicker
-// @description EAM Clicker
-// @match	    https://eam.eurme-amazon.com/*
-// @version     2
-// @grant       none
-// @run-at	    document-end
-// @downloadURL https://github.com/aIeksancler/EAM-Clicker/raw/master/EAM%20Helper.user.js
+// @name			EAM Clicker
+// @description		EAM Clicker
+// @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/master/EAM%20Helper.user.js
+// @match			https://eam.eurme-amazon.com/*
+// @version			2
+// @grant			none
+// @run-at			document-end
 // ==/UserScript==
 
 //GM_addStyle, GM_xmlhttpRequest
