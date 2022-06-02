@@ -2,10 +2,10 @@
 // @name        EAM Clicker
 // @description EAM Clicker
 // @match	    https://eam.eurme-amazon.com/*
-// @version     1
+// @version     2
 // @grant       none
 // @run-at	    document-end
-// @downloadURL 
+// @downloadURL https://github.com/aIeksancler/EAM-Clicker/raw/master/EAM%20Helper.user.js
 // ==/UserScript==
 
 //GM_addStyle, GM_xmlhttpRequest
@@ -182,7 +182,7 @@ if (button_checkAll.addEventListener) {
 var button_uncheckAll = document.createElement('Button');
 button_uncheckAll.innerHTML = 'Uncheck all';
 button_uncheckAll.style = 'top:0;right:0;position:absolute;z-index: 9999'
-document.body.appendChild(button_uncheckAll);
+//document.body.appendChild(button_uncheckAll);
 
 if (button_uncheckAll.addEventListener) {
     button_uncheckAll.addEventListener('click',f_uncheckAll,false);
