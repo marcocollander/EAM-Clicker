@@ -2,10 +2,10 @@
 // @name			EAM Clicker
 // @description			Clicker
 // @downloadURL			https://github.com/aIeksancler/EAM-Clicker/raw/master/EAM%20Helper.user.js
-// @match			https://eam.eurme-amazon.com/*
-// @version			2.01
+// @match			https://eam.eurme-amazon.com/web/base/COMMON*
+// @version			2.02
 // @grant			none
-// @run-at			document-end
+// @run-at			document-idle
 // ==/UserScript==
 
 //GM_addStyle, GM_xmlhttpRequest
