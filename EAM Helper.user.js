@@ -3,7 +3,7 @@
 // @description		EAM Clicker
 // @author			Olek
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
-// @version			3
+// @version			4
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -39,10 +39,8 @@ function scrollToLast(callback){
     var intervalTimeout = 0
     var count = 0
     var scrollInterval = setInterval(function(){
-        //console.log('#########################################');
 
         // search for list elements (checklist)
-        //        var list_elements = document.getElementsByClassName('x-form-item-label-text');
 
         var list_elements = document.getElementsByClassName('x-grid-item');
 
@@ -52,7 +50,7 @@ function scrollToLast(callback){
 
         // search for grid containing checklist
         var records_toolbar_text = document.getElementsByClassName('x-toolbar-text x-box-item x-toolbar-item x-toolbar-text-default');
-        //console.log(records_toolbar_text);
+        console.log('Records count field found: ' + records_toolbar_text);
 
         // EAM has two grid elements opened - one for PMs, one for checklist; the first one is in the background
         // we have to check if the checklist is fully loaded by checking "records x of y" for x == y
@@ -69,7 +67,7 @@ function scrollToLast(callback){
                 records_toolbar_text_temp = records_toolbar_text_temp.parentNode;
                 //console.log(records_toolbar_text_temp.id)
                 if(records_toolbar_text_temp.id.includes('checklistgrid')){
-                    //console.log('chcklistgrid found');
+                    console.log('chcklistgrid found');
                     // extract records number from the string
                     var records_number = records_toolbar_text[i].textContent.split(' ').filter(Number);
                     // check for x == y
@@ -82,12 +80,12 @@ function scrollToLast(callback){
 
             }
         }
-        //console.log('x: ' + x + ' y: ' + y);
+        console.log('x: ' + x + ' y: ' + y);
         //console.log(x < y)
 
         count++;
         if ( count === intervalTimeout || x === y ){
-            //console.log('Scrolling finished');
+            console.log('Scrolling finished');
             if ( x !== y) { callback(false); }
             else { callback(true); }
             clearInterval(scrollInterval);
@@ -166,7 +164,7 @@ function f_uncheckAll() {
     }
 }
 
-
+var toolbar = document.getElementsByClassName('x-toolbar x-docked x-toolbar-dataspy x-box-layout-ct')
 
 var button_checkAll = document.createElement('Button');
 button_checkAll.innerHTML = 'Check all';
@@ -179,13 +177,13 @@ if (button_checkAll.addEventListener) {
     button_checkAll.attachEvent('onclick',f_checkAll);
 }
 
-var button_uncheckAll = document.createElement('Button');
-button_uncheckAll.innerHTML = 'Uncheck all';
-button_uncheckAll.style = 'top:0;right:0;position:absolute;z-index: 9999'
-//document.body.appendChild(button_uncheckAll);
+// var button_uncheckAll = document.createElement('Button');
+// button_uncheckAll.innerHTML = 'Uncheck all';
+// button_uncheckAll.style = 'top:0;right:0;position:absolute;z-index: 9999'
+// document.body.appendChild(button_uncheckAll);
 
-if (button_uncheckAll.addEventListener) {
-    button_uncheckAll.addEventListener('click',f_uncheckAll,false);
-} else {
-    button_uncheckAll.attachEvent('onclick',f_uncheckAll);
-}
+// if (button_uncheckAll.addEventListener) {
+//     button_uncheckAll.addEventListener('click',f_uncheckAll,false);
+// } else {
+//     button_uncheckAll.attachEvent('onclick',f_uncheckAll);
+// }
