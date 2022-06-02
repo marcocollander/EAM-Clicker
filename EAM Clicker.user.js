@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name			EAM Clicker
 // @description		EAM Clicker
-// @author			aIeksander
+// @author			Olek
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.023
+// @version			4.024
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -46,7 +46,7 @@ function scrollToLast(callback){
 
             var list_elements = document.getElementsByClassName('x-grid-item');
 
-
+            console.log('Found ' + list_elements.length + ' grid items.');
             if (list_elements.length > 0){
 
                 list_elements[list_elements.length - 1].scrollIntoView();
@@ -193,7 +193,7 @@ if (button_checkAll.addEventListener) {
 
 setInterval(function (){
     // Select the node that will be observed for mutations
-    const active_tabs = document.getElementsByClassName('x-tab x-tab-active x-tab-top');
+    const active_tabs = document.getElementsByClassName('x-tab x-tab-active');
     if(active_tabs.length > 0){
         if ('Checklist' === active_tabs[0].firstChild.textContent){
             button_checkAll.style.visibility = 'visible';
