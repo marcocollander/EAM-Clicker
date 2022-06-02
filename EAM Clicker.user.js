@@ -4,7 +4,7 @@
 // @author			Olek
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.022
+// @version			4.023
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -193,7 +193,7 @@ if (button_checkAll.addEventListener) {
 
 setInterval(function (){
     // Select the node that will be observed for mutations
-    const active_tabs = document.getElementsByClassName('x-tab x-tab-active');
+    const active_tabs = document.getElementsByClassName('x-tab x-tab-active x-tab-top');
     if(active_tabs.length > 0){
         if ('Checklist' === active_tabs[0].firstChild.textContent){
             button_checkAll.style.visibility = 'visible';
