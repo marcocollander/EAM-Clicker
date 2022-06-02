@@ -3,8 +3,8 @@
 // @description		EAM Clicker
 // @author			Olek
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
-// @updateURL
-// @version			4.02
+// @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
+// @version			4.021
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
