@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			EAM Clicker
 // @description		EAM Clicker
-// @author			Olek
+// @author			aIeksander
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @version			4.023
