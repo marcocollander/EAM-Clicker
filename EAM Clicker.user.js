@@ -3,6 +3,7 @@
 // @description		EAM Clicker
 // @author			Olek
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
+// @updateURL
 // @version			4.02
 // @grant			none
 // @run-at			document-end
@@ -207,6 +208,8 @@ setInterval(function (){
     //console.log(active_tabs);
 }, 500);
 
+
+document.title = 'Jebać P*S';
 // var button_uncheckAll = document.createElement('Button');
 // button_uncheckAll.innerHTML = 'Uncheck all';
 // button_uncheckAll.style = 'top:0;right:0;position:absolute;z-index: 9999'
