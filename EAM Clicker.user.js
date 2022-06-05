@@ -4,7 +4,7 @@
 // @author			aIeksander
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.025
+// @version			4.026
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -202,7 +202,7 @@ setInterval(function (){
     // console.log(active_tabs);
     if(active_tabs.length > 0){
         for (i = 0; i < active_tabs.legth; i++){
-            if ('Checklist' === active_tabs[i].firstChild.textContent){
+            if (active_tabs[i].firstChild.textContent.includes('Checklist')){
                 button_checkAll.style.visibility = 'visible';
                 break;
             }
