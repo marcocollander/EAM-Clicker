@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name			EAM Clicker
 // @description		EAM Clicker
-// @author			Olek
+// @author			aIeksander
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.024
+// @version			4.025
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -148,15 +148,15 @@ function f_uncheckAll() {
     try{
         scrollToLast(function(value){
             if (value){
-                var count = 0;
-                var list_elements = document.getElementsByClassName('x-form-item-label-text');
+                let count = 0;
+                let list_elements = document.getElementsByClassName('x-form-item-label-text');
 
                 for(i = 0; i < list_elements.length; i++){
-                    var label_text = list_elements[i].textContent.trim();
+                    let label_text = list_elements[i].textContent.trim();
                     //console.log(label_text + ' ' +  arr_checkbox_text_to_click.includes(label_text))
                     // check if label text is in the text to be clicked array
                     // change element from label to checkbox
-                    var element = document.getElementById(list_elements[i].id.replace('-labelTextEl', '-inputEl'));
+                    let element = document.getElementById(list_elements[i].id.replace('-labelTextEl', '-inputEl'));
                     // if checkbox is not checked, click it
                     if (element.checked){
                         count++;
@@ -177,11 +177,11 @@ function f_uncheckAll() {
 }
 
 
-var toolbar = document.getElementsByClassName('x-toolbar x-docked x-toolbar-dataspy x-box-layout-ct')
+var toolbar = document.getElementsByClassName('x-tab x-top x-tab-top x-tab-active')
 
 var button_checkAll = document.createElement('Button');
 button_checkAll.innerHTML = 'Check all';
-button_checkAll.style = 'top:0;right:0;position:absolute;z-index: 9999'
+button_checkAll.style = 'top:0;right:0;position:absolute;z-index: 9999;visibility:hidden'
 button_checkAll
 document.body.appendChild(button_checkAll);
 
@@ -193,14 +193,24 @@ if (button_checkAll.addEventListener) {
 
 setInterval(function (){
     // Select the node that will be observed for mutations
-    const active_tabs = document.getElementsByClassName('x-tab x-tab-active');
+    let active_tabs = document.getElementsByClassName('x-tab-top x-tab-active');
+
+    for (i = 0; i < active_tabs.length; i++){
+        console.log(active_tabs[i].textContent);
+    }
+
+    // console.log(active_tabs);
     if(active_tabs.length > 0){
-        if ('Checklist' === active_tabs[0].firstChild.textContent){
-            button_checkAll.style.visibility = 'visible';
+        for (i = 0; i < active_tabs.legth; i++){
+            if ('Checklist' === active_tabs[i].firstChild.textContent){
+                button_checkAll.style.visibility = 'visible';
+                break;
+            }
+            else{
+                button_checkAll.style.visibility = 'hidden';
+            }
         }
-        else{
-            button_checkAll.style.visibility = 'hidden';
-        }
+
     }
     else{
         console.log('No active tab');
@@ -209,7 +219,6 @@ setInterval(function (){
 }, 500);
 
 
-document.title = 'Jebać P*S';
 // var button_uncheckAll = document.createElement('Button');
 // button_uncheckAll.innerHTML = 'Uncheck all';
 // button_uncheckAll.style = 'top:0;right:0;position:absolute;z-index: 9999'
