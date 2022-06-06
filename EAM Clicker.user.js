@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.027
+// @version			4.028
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -39,15 +39,36 @@ function waitForProcessing(){
 }
 
 function getCurrentPanel(){
-    let panels = document.getElementsByClassName('x-panel x-border-item');
-    for (i = panels.length - 1; i >= 0; i--){
-        if (!panels[i].classList.contains('x-panel-collapsed')){
+    try{
+        currentPanel = undefined;
+        let panels = document.getElementsByClassName('x-panel x-border-item');
+        console.log('Panels found: ' + panels.length);
+        for (i = panels.length - 1; i >= 0; i--){
+            if (!panels[i].classList.contains('x-panel-collapsed')){
+                parentElement = panels[i];
+                let hidden = false;
+                while(parentElement.parentNode && parentElement.parentNode.nodeName.toLowerCase() != 'body') {
+                    parentElement = parentElement.parentNode;
+                    if (parentElement.classList.contains('x-hidden-offsets')){
+                        console.log('Panel ' + panels[i].id + ' is hidden');
+                        hidden = true;
+                        break;
+                    }
+                }
+                if (!hidden){
+                    console.log('Panel ' + panels[i].id + ' is not hidden')
+                    return panels[i];
+                }
 
-            return panels[i];
+            }
+            console.log('Panel undefined / not found.');
+            return undefined;
         }
+    } catch (error){
+        console.error(error);
+        console.log('Panel undefined due to error.');
+        return undefined;
     }
-    console.log(panels[panels.length-1]);
-    return undefined;
 }
 
 function scrollToLast(callback){
@@ -130,7 +151,8 @@ function scrollToLast(callback){
 function f_checkAll() {
     try{
         currentPanel = getCurrentPanel();
-        if (typeof currentPanel !== undefined){
+        console.log( typeof currentPanel !== undefined);
+        if (typeof currentPanel !== 'undefined'){
             scrollToLast(function(value){
                 console.log('scrollToLast return value :' + value)
                 if (value){
@@ -165,7 +187,7 @@ function f_checkAll() {
 function f_uncheckAll() {
     try{
         currentPanel = getCurrentPanel();
-        if (typeof currentPanel !== undefined){
+        if (typeof currentPanel !== 'undefined'){
             scrollToLast(function(value){
                 if (value){
                     let count = 0;
