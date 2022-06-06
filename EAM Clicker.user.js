@@ -14,14 +14,18 @@
 
 
 // update with your EAM language
-var arr_checkbox_text_to_click = ['Yes:',
-                                  'Completed:',
-                                  'Tak:',
-                                  'Zakończone:',
-                                  'Ja:',
-                                  'Abgeschlossen:']
+const arr_checkbox_text_to_click = ['Yes:',
+                                    'Completed:',
+                                    'Tak:',
+                                    'Zakończone:',
+                                    'Ja:',
+                                    'Abgeschlossen:']
 
+const checklist_translations = ['Checklist',
+                                'Lista kontrolna']
 
+var grid_result_cells;
+var currentPanel;
 
 console.log('Script Loaded');
 
@@ -32,6 +36,18 @@ function waitForProcessing(){
                                                                                             waitForProcessing();
                                                                                            }
     }, 500)
+}
+
+function getCurrentPanel(){
+    let panels = document.getElementsByClassName('x-panel x-border-item');
+    for (i = panels.length - 1; i >= 0; i--){
+        if (!panels[i].classList.contains('x-panel-collapsed')){
+
+            return panels[i];
+        }
+    }
+    console.log(panels[panels.length-1]);
+    return undefined;
 }
 
 function scrollToLast(callback){
@@ -45,7 +61,7 @@ function scrollToLast(callback){
 
             // search for list elements (checklist)
 
-            var list_elements = document.getElementsByClassName('x-grid-item');
+            var list_elements = currentPanel.getElementsByClassName('x-grid-item');
 
             console.log('Found ' + list_elements.length + ' grid items.');
             if (list_elements.length > 0){
@@ -54,13 +70,12 @@ function scrollToLast(callback){
                 //waitForProcessing();
 
                 // search for grid containing checklist
-                var records_toolbar_text = document.getElementsByClassName('x-toolbar-text x-box-item x-toolbar-item x-toolbar-text-default');
+                var records_toolbar_text = currentPanel.getElementsByClassName('x-toolbar-text x-box-item x-toolbar-item x-toolbar-text-default');
                 console.log('Records count field found: ' + records_toolbar_text);
 
                 // EAM has two grid elements opened - one for PMs, one for checklist; the first one is in the background
                 // we have to check if the checklist is fully loaded by checking "records x of y" for x == y
                 for(i = 0; i < records_toolbar_text.length; i++){
-                    //console.log(i);
                     // checklist grid has 'checklistgrid' in it's ID
                     //console.log(i)
                     var records_toolbar_text_temp = records_toolbar_text[i];
@@ -89,7 +104,7 @@ function scrollToLast(callback){
                 //console.log(x < y)
 
                 count++;
-                if ( count === intervalTimeout || x === y ){
+                if ( count === intervalTimeout || x === y || count > 10){
                     console.log('Scrolling finished');
                     clearInterval(scrollInterval);
                     if ( x !== y) { return callback(false); }
@@ -114,31 +129,33 @@ function scrollToLast(callback){
 
 function f_checkAll() {
     try{
-        scrollToLast(function(value){
-            console.log('scrollToLast return value :' + value)
-            if (value){
-                var count = 0;
-                var list_elements = document.getElementsByClassName('x-form-item-label-text');
+        currentPanel = getCurrentPanel();
+        if (typeof currentPanel !== undefined){
+            scrollToLast(function(value){
+                console.log('scrollToLast return value :' + value)
+                if (value){
+                    var count = 0;
+                    var list_elements = currentPanel.getElementsByClassName('x-field x-form-item x-form-item-default x-form-type-checkbox x-box-item x-hbox-form-item');
 
-                for(i = 0; i < list_elements.length; i++){
-                    var label_text = list_elements[i].textContent.trim();
-                    //console.log(label_text + ' ' +  arr_checkbox_text_to_click.includes(label_text))
-                    // check if label text is in the text to be clicked array
-                    if (arr_checkbox_text_to_click.includes(label_text)){
-                        // change element from label to checkbox
-                        var element = document.getElementById(list_elements[i].id.replace('-labelTextEl', '-inputEl'));
-                        // if checkbox is not checked, click it
-                        if (!element.checked){
-                            count++;
-                            // click on checkbox
-                            element.click();
+                    for(i = 0; i < list_elements.length; i++){
+                        var label_text = list_elements[i].textContent.trim();
+                        //console.log(label_text + ' ' +  arr_checkbox_text_to_click.includes(label_text))
+                        // check if label text is in the text to be clicked array
+                        if (arr_checkbox_text_to_click.includes(label_text)){
+                            // change element from label to checkbox
+                            // if checkbox is not checked, click it
+                            if (!list_elements[i].classList.contains('x-form-cb-checked')){
+                                count++;
+                                // click on checkbox
+                                list_elements[i].firstChild.click();
+                            }
+                            //console.log(div[i].id.replace('-labelTextEl', '-inputEl'));
                         }
-                        //console.log(div[i].id.replace('-labelTextEl', '-inputEl'));
                     }
+                    console.log('Clicked: ' + count);
                 }
-                console.log('Clicked: ' + count);
-            }
-        });
+            });
+        }
     } catch (error){
         console.error(error);
     }
@@ -147,44 +164,45 @@ function f_checkAll() {
 
 function f_uncheckAll() {
     try{
-        scrollToLast(function(value){
-            if (value){
-                let count = 0;
-                let list_elements = document.getElementsByClassName('x-form-item-label-text');
+        currentPanel = getCurrentPanel();
+        if (typeof currentPanel !== undefined){
+            scrollToLast(function(value){
+                if (value){
+                    let count = 0;
+                    var list_elements = currentPanel.getElementsByClassName('x-field x-form-item x-form-item-default x-form-type-checkbox x-box-item x-hbox-form-item');
 
-                for(i = 0; i < list_elements.length; i++){
-                    let label_text = list_elements[i].textContent.trim();
-                    //console.log(label_text + ' ' +  arr_checkbox_text_to_click.includes(label_text))
-                    // check if label text is in the text to be clicked array
-                    // change element from label to checkbox
-                    let element = document.getElementById(list_elements[i].id.replace('-labelTextEl', '-inputEl'));
-                    // if checkbox is not checked, click it
-                    if (element.checked){
-                        count++;
-                        // click on checkbox
-                        element.click();
+                    for(i = 0; i < list_elements.length-1; i++){
+                        if (list_elements[i].classList.contains('x-form-cb-checked')){
+                            count++;
+                            // click on checkbox
+                            list_elements[i].firstChild.click();
+                        }
+                        //console.log(div[i].id.replace('-labelTextEl', '-inputEl'));
                     }
-                    //console.log(div[i].id.replace('-labelTextEl', '-inputEl'));
-
+                    console.log('Clicked: ' + count);
                 }
-                console.log('Clicked: ' + count);
-            }
-        });
-    }
 
+            });
+        }
+    }
     catch (error){
         console.error(error);
     }
 }
 
+var buttons_container = document.createElement('div');
+buttons_container.name = 'buttonsContainer';
+buttons_container.style = 'width:5%;top:0;right:0;position:absolute;z-index: 9999;visibility:visible';
+document.body.appendChild(buttons_container);
 
-var toolbar = document.getElementsByClassName('x-tab x-top x-tab-top x-tab-active')
+
+// button declaration
 
 var button_checkAll = document.createElement('Button');
 button_checkAll.innerHTML = 'Check all';
-button_checkAll.style = 'top:0;right:0;position:absolute;z-index: 9999;visibility:hidden'
-button_checkAll
-document.body.appendChild(button_checkAll);
+button_checkAll.style = 'right:0;top:0;position:relative'
+button_checkAll.name = 'checkAllButton';
+buttons_container.appendChild(button_checkAll);
 
 if (button_checkAll.addEventListener) {
     button_checkAll.addEventListener('click',f_checkAll,false);
@@ -192,26 +210,55 @@ if (button_checkAll.addEventListener) {
     button_checkAll.attachEvent('onclick',f_checkAll);
 }
 
-setInterval(function (){
-    // Select the node that will be observed for mutations
-    let active_tabs = document.getElementsByClassName('x-tab-top x-tab-active');
+
+
+var button_uncheckAll = document.createElement('Button');
+button_uncheckAll.innerHTML = 'Uncheck all';
+button_uncheckAll.style = 'right;0top:0;right:0;position:relative'
+button_uncheckAll.name = 'checkAllButton';
+buttons_container.appendChild(button_uncheckAll);
+
+if (button_uncheckAll.addEventListener) {
+    button_uncheckAll.addEventListener('click',f_uncheckAll,false);
+} else {
+    button_uncheckAll.attachEvent('onclick',f_uncheckAll);
+}
 
 
 
-    // console.log(active_tabs);
-    if(active_tabs.length > 0){
-        if (active_tabs[0].firstChild.textContent.trim() === 'Checklist'){
-            button_checkAll.style.visibility = 'visible';
-        }
-        else{
-            button_checkAll.style.visibility = 'hidden';
-        }
-    }
-    else{
-        console.log('No active tab');
-    }
-    //console.log(active_tabs);
-}, 500);
+
+
+// setInterval(function (){
+//     // Select the node that will be observed for mutations
+//     let active_tabs = document.getElementsByClassName('x-tab-top x-tab-active');
+
+//     // console.log(active_tabs);
+//     if(active_tabs.length > 0){
+//         for (i = 0; i < active_tabs.length; i++){
+//             console.log(active_tabs[i].firstChild.innerText);
+//         }
+//         if (checklist_translations.includes(active_tabs[0].firstChild.textContent.trim())){
+//             if (document.getElementsByName('checkAllButton').length === 0){
+//                 grid_result_cells = document.getElementsByClassName('x-field x-form-item x-form-type-checkbox x-box-item x-hbox-form-item');
+//                 bodyWrap = grid_result_cells[0].parentElement;
+//                 console.log(bodyWrap.classList.contains('x-panel-bodyWrap'));
+//                 while (!bodyWrap.classList.contains('x-panel-bodyWrap')){
+//                     console.log(bodyWrap.classList);
+//                     bodyWrap = bodyWrap.parentElement;
+//                 }
+//                 console.log(bodyWrap)
+//                 toolBar = bodyWrap.getElementsByClassName('x-toolbar-grid-footer')[0].firstChild;
+//                 console.log(toolBar);
+//                 console.log(toolBar.appendChild(button_checkAll));
+
+//             }
+//         }
+//     }
+//     else{
+//         console.log('No active tab');
+//     }
+//     //console.log(active_tabs);
+// }, 500);
 
 
 // var button_uncheckAll = document.createElement('Button');
