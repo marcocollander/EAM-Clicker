@@ -24,7 +24,7 @@ const arr_checkbox_text_to_click = ['Yes:',
 const checklist_translations = ['Checklist',
                                 'Lista kontrolna']
 
-const hours_selection = ['0.25', '0.5', '0.75', '1', '1.5', '2']
+const hours_selection = ['-1', '-0.5', '-0.25', '+0.25', '+0.5', '+1']
 
 
 var grid_result_cells;
@@ -204,8 +204,11 @@ function f_fillLogin(e){
 
 function f_fillHours(e, element, value){
     try{
-        console.log(element);
-        console.log(element.value = value);
+        if (parseFloat(element.value)){
+            console.log(element.value = parseFloat(element.value) + parseFloat(value));
+        }
+        else
+            console.log(element.value = parseFloat(value));
     }
     catch (error){
         console.error(error);
@@ -324,11 +327,14 @@ let refreshInterval = setInterval(function(){
         let hoursWorked = iframe.getElementsByName('hrswork')
         for (let i = 0; i < hoursWorked.length; i++){
             let hoursWorkedElement = hoursWorked[i];
-            if (!hoursWorkedElement.classList.contains('zwyroled')){
-                hoursWorkedElement.classList.add('zwyroled');
+            //console.log(hoursWorkedElement.id);
+            console.log(hoursWorkedElement.getElementsByClassName('zwyroled'));
+            if (hoursWorkedElement.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
+
                 let buttons_container = document.createElement('div');
-                buttons_container.style = 'position:absolute;top:0;left:320px';
+                buttons_container.style = 'position:relative;top:0;left:10px';
                 buttons_container.name = 'hrsButtonsContainer';
+                buttons_container.classList.add('zwyroled');
 
                 for (let i = 0; i < hours_selection.length; i++){
                     let button = document.createElement("button");
