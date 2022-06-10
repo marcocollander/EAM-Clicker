@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.03
+// @version			4.035
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -23,6 +23,9 @@ const arr_checkbox_text_to_click = ['Yes:',
 
 const checklist_translations = ['Checklist',
                                 'Lista kontrolna']
+
+const hours_selection = ['0.25', '0.5', '0.75', '1', '1.5', '2']
+
 
 var grid_result_cells;
 var currentPanel;
@@ -68,7 +71,7 @@ function scrollToLast(callback){
 
                 // EAM has two grid elements opened - one for PMs, one for checklist; the first one is in the background
                 // we have to check if the checklist is fully loaded by checking "records x of y" for x == y
-                for(i = 0; i < records_toolbar_text.length; i++){
+                for(let i = 0; i < records_toolbar_text.length; i++){
                     // checklist grid has 'checklistgrid' in it's ID
                     //console.log(i)
                     var records_toolbar_text_temp = records_toolbar_text[i];
@@ -133,7 +136,7 @@ function f_checkAll(e) {
                     var count = 0;
                     var list_elements = currentPanel.getElementsByClassName('x-field x-form-item x-form-item-default x-form-type-checkbox x-box-item x-hbox-form-item');
 
-                    for(i = 0; i < list_elements.length; i++){
+                    for(let i = 0; i < list_elements.length; i++){
                         var label_text = list_elements[i].textContent.trim();
                         //console.log(label_text + ' ' +  arr_checkbox_text_to_click.includes(label_text))
                         // check if label text is in the text to be clicked array
@@ -167,7 +170,7 @@ function f_uncheckAll(e) {
                     let count = 0;
                     var list_elements = currentPanel.getElementsByClassName('x-field x-form-item x-form-item-default x-form-type-checkbox x-box-item x-hbox-form-item');
 
-                    for(i = 0; i < list_elements.length-1; i++){
+                    for(let i = 0; i < list_elements.length-1; i++){
                         if (list_elements[i].classList.contains('x-form-cb-checked')){
                             count++;
                             // click on checkbox
@@ -185,6 +188,31 @@ function f_uncheckAll(e) {
         console.error(error);
     }
 }
+
+function f_fillLogin(e){
+    try{
+        if (employeeName !== ''){
+            e.srcElement.value = employeeName;
+            e.srcElement.removeEventListener('click', f_fillLogin);
+        }
+    }
+    catch (error){
+        console.error(error);
+
+    }
+}
+
+function f_fillHours(e, element, value){
+    try{
+        console.log(element);
+        console.log(element.value = value);
+    }
+    catch (error){
+        console.error(error);
+
+    }
+}
+
 
 var buttons_container = document.createElement('div');
 buttons_container.style = 'position:absolute;top:0;left:320px';
@@ -208,54 +236,70 @@ button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px'
 button_uncheckAll.name = 'uncheckAllButton';
 buttons_container.appendChild(button_uncheckAll);
 
-if (button_uncheckAll.addEventListener) {
-    button_uncheckAll.addEventListener('click',f_uncheckAll,true);
-} else {
-    button_uncheckAll.attachEvent('onclick',f_uncheckAll);
-}
 
-let gridBodies;
-console.log(gridBodies = document.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body'));
 
-function showId(e){
-    //console.log(e);
-    console.log('Clicked in: ' + e.srcElement.parentNode.parentNode.parentNode.id);
-}
 
-setInterval(function(){
-    for (let i = 0; i < gridBodies.length; i++){
-        if (!gridBodies[i].classList.contains('zwyroled')){
-            gridBodies[i].classList.add('zwyroled');
-            console.log(gridBodies[i].parentElement.firstChild.appendChild(buttons_container.cloneNode(true)));
-            let buttons
-            console.log( buttons = gridBodies[i].parentNode.getElementsByClassName('zwyrolButton'));
-            for(let i = 0; i < buttons.length; i++){
-                let button = buttons[i]
-                if (button.name === 'checkAllButton'){
-                    button.addEventListener('click',f_checkAll);
-                }
-                else if (button.name === 'uncheckAllButton'){
-                    button.addEventListener('click',f_uncheckAll);
-                }
-            }
-            console.log('Zwyroled ' + gridBodies[i].id);
+
+let allDocuments = [document];
+var employeeName = '';
+
+// const timeout = setTimeout(stopInterval, 500);
+
+let refreshInterval = setInterval(function(){
+    if (employeeName === ''){
+        try{
+            employeeName = document.getElementsByClassName('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText;
+            employeeName = employeeName.slice(employeeName.indexOf('(') + 1, employeeName.indexOf(')'));
+            console.log(employeeName);
+        }
+        catch (error){
+            employeeName = '';
+            console.error(error);
+            console.log("Don't panic. Maybe it didn't show on the screen yet. ;)");
         }
     }
 
-    let iframes = document.querySelectorAll('[data-ref="iframeEl"]');
-    for (i = 0; i < iframes.length; i++){
-        //console.log('Zwyrolling iframe: ' + iframes[i].id);
-        let gridBodies;
-        let iframe;
-        iframe = iframes[i].contentDocument || iframe[i].contentWindow.document;
-        //console.log(iframe = iframes[i].contentDocument || iframe[i].contentWindow.document);
-        gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body');
-        //console.log(gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body'));
 
-        for (i = 0; i < gridBodies.length; i++){
+    let iframes = document.querySelectorAll('[data-ref="iframeEl"]');
+    // search iframes
+    for (let i = 0; i < iframes.length; i++){
+        if (!iframes[i].classList.contains('zwyroled')){
+            allDocuments.push(iframes[i]);
+            iframes[i].classList.add('zwyroled');
+        }
+    }
+
+
+    // search iframes
+    for (let i = 0; i < allDocuments.length; i++){
+        //console.log('Zwyrolling iframe: ' + iframes[i].id);
+        let iframe;
+        //iframe = iframes[i].contentDocument || iframe[i].contentWindow.document;
+        if (i > 0){
+            iframe = allDocuments[i].contentDocument || allDocuments[i].contentWindow.document;
+            // console.log(iframe = allDocuments[i].contentDocument || allDocuments[i].contentWindow.document);
+        }
+        else{
+            iframe = allDocuments[0];
+            // console.log(iframe = allDocuments[0]);
+        }
+
+        let employee_name_field = iframe.getElementsByName('employee');
+        if(employee_name_field.length > 0){
+            for (let i = 0; i < employee_name_field.length; i++){
+                if(!employee_name_field[i].classList.contains('zwyroled')){
+                    employee_name_field[i].classList.add('zwyroled');
+                    employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
+                    //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
+                }
+            }
+        }
+
+        let gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body');
+
+        for (let i = 0; i < gridBodies.length; i++){
             if (!gridBodies[i].classList.contains('zwyroled')){
                 gridBodies[i].classList.add('zwyroled');
-                //console.log(gridBodies[i].parentElement.firstChild.appendChild(buttons_container));
                 console.log(gridBodies[i].parentElement.firstChild.appendChild(buttons_container.cloneNode(true)));
                 let buttons
                 console.log( buttons = gridBodies[i].parentNode.getElementsByClassName('zwyrolButton'));
@@ -272,5 +316,38 @@ setInterval(function(){
             }
         }
 
+        let typeOfHours = iframe.getElementsByName('octype')
+        if (typeOfHours.length > 0){
+            //console.log(typeOfHours);
+        }
+
+        let hoursWorked = iframe.getElementsByName('hrswork')
+        for (let i = 0; i < hoursWorked.length; i++){
+            let hoursWorkedElement = hoursWorked[i];
+            if (!hoursWorkedElement.classList.contains('zwyroled')){
+                hoursWorkedElement.classList.add('zwyroled');
+                let buttons_container = document.createElement('div');
+                buttons_container.style = 'position:absolute;top:0;left:320px';
+                buttons_container.name = 'hrsButtonsContainer';
+
+                for (let i = 0; i < hours_selection.length; i++){
+                    let button = document.createElement("button");
+                    button.innerHTML = hours_selection[i];
+                    button.style = 'right:0;top:0;position:relative;margin:5px'
+
+                    button.addEventListener('click',(event) => f_fillHours(event, hoursWorkedElement, hours_selection[i]));
+                    buttons_container.appendChild(button);
+                }
+
+                console.log(hoursWorkedElement.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container));
+            }
+        }
+
+
     }
 }, 1000);
+
+// function stopInterval(){
+//     timeout = clearTimeout(stopInterval, 500);
+//     refreshInterval(refreshInterval);
+// }
