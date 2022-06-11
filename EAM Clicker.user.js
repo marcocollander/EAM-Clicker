@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.43
+// @version			4.44
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -121,11 +121,9 @@ function scrollToLast(callback){
     }
 }
 
-
-
 function f_checkAll(e) {
     //console.log('Button parent element id: ' + event.target.parentElement.id);
-    console.log(this.id);
+    console.log('Grid id :' + this.id);
     try{
         currentPanel = e.srcElement.parentNode.parentNode.parentNode;
         console.log( typeof currentPanel !== undefined);
@@ -159,7 +157,6 @@ function f_checkAll(e) {
         console.error(error);
     }
 }
-
 
 function f_uncheckAll(e) {
     try{
@@ -205,10 +202,11 @@ function f_fillLogin(e){
 function f_fillHours(e, element, value){
     try{
         if (parseFloat(element.value)){
-            console.log(element.value = parseFloat(element.value) + parseFloat(value));
+            element.value = parseFloat(element.value) + parseFloat(value);
         }
-        else
-            console.log(element.value = parseFloat(value));
+        else{
+            element.value = parseFloat(value);
+        }
     }
     catch (error){
         console.error(error);
@@ -216,53 +214,46 @@ function f_fillHours(e, element, value){
     }
 }
 
-
-var buttons_container = document.createElement('div');
-buttons_container.style = 'position:absolute;top:0;left:320px';
-buttons_container.name = 'buttonsContainer';
-
-
-// button declaration
-
-var button_checkAll = document.createElement('Button');
-button_checkAll.innerHTML = 'Check all';
-button_checkAll.classList.add('zwyrolButton');
-button_checkAll.style = 'right:0;top:0;position:relative;margin:10px'
-button_checkAll.name = 'checkAllButton';
-buttons_container.appendChild(button_checkAll);
-
-
-var button_uncheckAll = document.createElement('Button');
-button_uncheckAll.innerHTML = 'Uncheck all';
-button_uncheckAll.classList.add('zwyrolButton');
-button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px'
-button_uncheckAll.name = 'uncheckAllButton';
-buttons_container.appendChild(button_uncheckAll);
-
-
-
-
+function f_toggleOT(e, element){
+    try{
+        if (element.value === 'N' || element.value === ''){
+            element.value = 'O';
+            e.srcElement.innerHTML = 'Normal :(';
+        }
+        else{
+            element.value = 'N';
+            e.srcElement.innerHTML = '$OT$';
+        }
+    }
+    catch(e){
+        console.error(e);
+    }
+}
 
 let allDocuments = [document];
 var employeeName = '';
 
 // const timeout = setTimeout(stopInterval, 500);
 
-let refreshInterval = setInterval(function(){
-    if (employeeName === ''){
-        try{
-            employeeName = document.getElementsByClassName('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText;
-            employeeName = employeeName.slice(employeeName.indexOf('(') + 1, employeeName.indexOf(')'));
-            console.log(employeeName);
-        }
-        catch (error){
-            employeeName = '';
-            console.error(error);
-            console.log("Don't panic. Maybe it didn't show on the screen yet. ;)");
-        }
+let getEmployeeNameInterval = setInterval(function(){
+    try{
+        employeeName = document.getElementsByClassName('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText;
+        employeeName = employeeName.slice(employeeName.indexOf('(') + 1, employeeName.indexOf(')'));
+        console.log('Found employee name: ' + employeeName);
+        clearInterval(getEmployeeNameInterval);
     }
+    catch (error){
+        employeeName = '';
+        console.error(error);
+        console.log("Don't panic. Maybe it didn't show on the screen yet. ;)");
+    }
+}, 1000);
 
 
+
+let refreshInterval = setInterval(function(){
+
+    // collecting all iframes
     let iframes = document.querySelectorAll('[data-ref="iframeEl"]');
     // search iframes
     for (let i = 0; i < iframes.length; i++){
@@ -287,6 +278,7 @@ let refreshInterval = setInterval(function(){
             // console.log(iframe = allDocuments[0]);
         }
 
+        // name filling on click
         let employee_name_field = iframe.getElementsByName('employee');
         if(employee_name_field.length > 0){
             for (let i = 0; i < employee_name_field.length; i++){
@@ -298,38 +290,69 @@ let refreshInterval = setInterval(function(){
             }
         }
 
+        // adding checking buttons to any grid item
         let gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body');
 
         for (let i = 0; i < gridBodies.length; i++){
             if (!gridBodies[i].classList.contains('zwyroled')){
                 gridBodies[i].classList.add('zwyroled');
-                console.log(gridBodies[i].parentElement.firstChild.appendChild(buttons_container.cloneNode(true)));
-                let buttons
-                console.log( buttons = gridBodies[i].parentNode.getElementsByClassName('zwyrolButton'));
-                for(let i = 0; i < buttons.length; i++){
-                    let button = buttons[i]
-                    if (button.name === 'checkAllButton'){
-                        button.addEventListener('click',f_checkAll);
-                    }
-                    else if (button.name === 'uncheckAllButton'){
-                        button.addEventListener('click',f_uncheckAll);
-                    }
-                }
+
+                let buttons_container = document.createElement('div');
+                buttons_container.style = 'position:absolute;top:0;left:320px';
+                buttons_container.name = 'buttonsContainer';
+
+                // button declaration
+                let button_checkAll = document.createElement('Button');
+                button_checkAll.innerHTML = 'Check all';
+                button_checkAll.classList.add('zwyrolButton');
+                button_checkAll.style = 'right:0;top:0;position:relative;margin:10px'
+                button_checkAll.addEventListener('click',f_checkAll);
+                buttons_container.appendChild(button_checkAll);
+
+                let button_uncheckAll = document.createElement('Button');
+                button_uncheckAll.innerHTML = 'Uncheck all';
+                button_uncheckAll.classList.add('zwyrolButton');
+                button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px'
+                button_uncheckAll.addEventListener('click',f_uncheckAll);
+                buttons_container.appendChild(button_uncheckAll);
+
+                gridBodies[i].parentElement.firstChild.appendChild(buttons_container);
+
                 console.log('Zwyroled gridBody ' + gridBodies[i].id + ' in iframe ' + iframe.id);
             }
         }
+        let searchedFields
 
-        let typeOfHours = iframe.getElementsByName('octype')
-        if (typeOfHours.length > 0){
-            //console.log(typeOfHours);
+        // adding OT button
+        searchedFields = iframe.getElementsByName('octype')
+        for (let i = 0; i < searchedFields.length; i++){
+            let element = searchedFields[i];
+            //console.log(hoursWorkedElement.id);
+            if (element.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
+
+                let buttons_container = document.createElement('div');
+                buttons_container.style = 'position:relative;top:0;left:10px';
+                buttons_container.name = 'hrsButtonsContainer';
+                buttons_container.classList.add('zwyroled');
+
+                let button = document.createElement("button");
+                button.innerHTML = '$OT$';
+                button.style = 'right:0;top:0;position:relative;margin:5px'
+
+                button.addEventListener('click',(event) => f_toggleOT(event, element));
+                buttons_container.appendChild(button);
+
+
+                element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
+            }
         }
 
-        let hoursWorked = iframe.getElementsByName('hrswork')
-        for (let i = 0; i < hoursWorked.length; i++){
-            let hoursWorkedElement = hoursWorked[i];
+
+        searchedFields = iframe.getElementsByName('hrswork')
+        for (let i = 0; i < searchedFields.length; i++){
+            let element = searchedFields[i];
             //console.log(hoursWorkedElement.id);
-            console.log(hoursWorkedElement.getElementsByClassName('zwyroled'));
-            if (hoursWorkedElement.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
+            if (element.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
 
                 let buttons_container = document.createElement('div');
                 buttons_container.style = 'position:relative;top:0;left:10px';
@@ -341,19 +364,14 @@ let refreshInterval = setInterval(function(){
                     button.innerHTML = hours_selection[i];
                     button.style = 'right:0;top:0;position:relative;margin:5px'
 
-                    button.addEventListener('click',(event) => f_fillHours(event, hoursWorkedElement, hours_selection[i]));
+                    button.addEventListener('click',(event) => f_fillHours(event, element, hours_selection[i]));
                     buttons_container.appendChild(button);
                 }
 
-                console.log(hoursWorkedElement.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container));
+                element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
             }
         }
 
 
     }
 }, 1000);
-
-// function stopInterval(){
-//     timeout = clearTimeout(stopInterval, 500);
-//     refreshInterval(refreshInterval);
-// }
