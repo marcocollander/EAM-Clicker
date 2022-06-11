@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.041
+// @version			4.042
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -191,7 +191,7 @@ function f_uncheckAll(e) {
 
 function f_fillLogin(e){
     try{
-        if (employeeName !== '' && e.srcElement.value === ''){
+        if (employeeName !== '' && e.srcElement.value.length > 0){
             e.srcElement.value = employeeName;
             e.srcElement.removeEventListener('click', f_fillLogin);
         }
