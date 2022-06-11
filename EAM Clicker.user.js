@@ -21,16 +21,30 @@ const arr_checkbox_text_to_click = ['Yes:',
                                     'Ja:',
                                     'Abgeschlossen:']
 
-const checklist_translations = ['Checklist',
-                                'Lista kontrolna']
-
 const hours_selection = ['-1', '-0.5', '-0.25', '+0.25', '+0.5', '+1']
-
 
 var grid_result_cells;
 var currentPanel;
 
-
+const kablociag = ['Enterprise Asset Management',
+                   'Wypiekają chleb piekarze,',
+                   'wyrabiają stal hutnicy,',
+                   'krawcy gacie,',
+                   'szewcy buty,',
+                   'a my ciągnim druty.',
+                   'Hej chwyćmy kabla w dłonie,',
+                   'hej ciągmy razem w kupie,',
+                   'bo jak zabraknie prądu',
+                   'ludzkość będzie w dupie.',
+                   'Raz pod wodą,raz pod ziemią,',
+                   'raz na górze,raz w dolinie,',
+                   'ciągnij bracie,ciągnij kabla,',
+                   'bo nim prąd popłynie',
+                   'Hej chwyćmy kabla w dłonie,',
+                   'hej ciągmy razem w kupie,',
+                   'hej ciągmy ile siły,',
+                   'reszte miejmy w dupie.',
+                   'Enterprise Asset Management']
 
 
 
@@ -249,7 +263,7 @@ let getEmployeeNameInterval = setInterval(function(){
     }
 }, 1000);
 
-
+let verse = 0;
 
 let refreshInterval = setInterval(function(){
 
@@ -371,6 +385,10 @@ let refreshInterval = setInterval(function(){
                 element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
             }
         }
+
+        if (verse < kablociag.length) document.title = kablociag[verse];
+        verse++;
+        if (verse > kablociag.length + 10) verse = 0;
 
 
     }
