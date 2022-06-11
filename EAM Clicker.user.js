@@ -191,7 +191,7 @@ function f_uncheckAll(e) {
 
 function f_fillLogin(e){
     try{
-        if (employeeName !== '' && e.srcElement.value.length > 0){
+        if (employeeName !== '' && e.srcElement.value.length === 0){
             e.srcElement.value = employeeName;
             e.srcElement.removeEventListener('click', f_fillLogin);
         }
