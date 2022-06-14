@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.45
+// @version			4.46
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -200,11 +200,15 @@ function f_uncheckAll(e) {
     }
 }
 
-function f_fillLogin(e){
+function f_fillLogin(e, iframe){
     try{
         if (employeeName !== '' && e.srcElement.value.length === 0){
             e.srcElement.value = employeeName;
             e.srcElement.removeEventListener('click', f_fillLogin);
+            let range = new Range();
+            console.log(range.selectNode(e.srcElement.firstChild.value));
+            console.log(iframe.getSelection().removeAllRanges());
+            console.log(iframe.getSelection().addRange(range));
         }
     }
     catch (error){
@@ -300,7 +304,20 @@ let refreshInterval = setInterval(function(){
                 for (let i = 0; i < employee_name_field.length; i++){
                     if(!employee_name_field[i].classList.contains('zwyroled')){
                         employee_name_field[i].classList.add('zwyroled');
-                        employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
+                        //employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
+                        employee_name_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
+                        //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
+                    }
+                }
+            }
+
+            employee_name_field = iframe.getElementsByName('assignedto');
+            if(employee_name_field.length > 0){
+                for (let i = 0; i < employee_name_field.length; i++){
+                    if(!employee_name_field[i].classList.contains('zwyroled')){
+                        employee_name_field[i].classList.add('zwyroled');
+                        //employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
+                        employee_name_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
                         //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
                     }
                 }
