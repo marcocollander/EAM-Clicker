@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.46
+// @version			4.47
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -29,8 +29,7 @@ var currentPanel;
 const kablociag = ['Enterprise Asset Management',
                    'Wypiekają chleb piekarze,',
                    'wyrabiają stal hutnicy,',
-                   'krawcy gacie,',
-                   'szewcy buty,',
+                   'krawcy gacie, szewcy buty,',
                    'a my ciągnim druty.',
                    'Hej chwyćmy kabla w dłonie,',
                    'hej ciągmy razem w kupie,',
@@ -39,7 +38,7 @@ const kablociag = ['Enterprise Asset Management',
                    'Raz pod wodą, raz pod ziemią,',
                    'raz na górze, raz w dolinie,',
                    'ciągnij bracie, ciągnij kabla,',
-                   'bo nim prąd popłynie',
+                   'bo nim prąd popłynie.',
                    'Hej chwyćmy kabla w dłonie,',
                    'hej ciągmy razem w kupie,',
                    'hej ciągmy ile siły,',
@@ -438,9 +437,9 @@ let refreshInterval = setInterval(function(){
     }
 
 
-    if (verse < kablociag.length) document.title = kablociag[verse];
+    if (Math.floor(verse/2)-5 < kablociag.length && Math.floor(verse/2)-5 >= 0) document.title = kablociag[Math.floor(verse/2) - 5];
     verse++;
-    if (verse > kablociag.length + 10) verse = 0;
+    if (verse/2 > kablociag.length + 10) verse = 0;
 
 }, 1000);
 
