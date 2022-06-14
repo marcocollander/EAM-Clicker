@@ -411,12 +411,15 @@ let refreshInterval = setInterval(function(){
             allDocuments.splice(i, 1);
         }
 
-        if (verse < kablociag.length) document.title = kablociag[verse];
-        verse++;
-        if (verse > kablociag.length + 10) verse = 0;
 
 
     }
+
+
+    if (verse < kablociag.length) document.title = kablociag[verse];
+    verse++;
+    if (verse > kablociag.length + 10) verse = 0;
+
 }, 1000);
 
 
