@@ -200,15 +200,11 @@ function f_uncheckAll(e) {
     }
 }
 
-function f_fillLogin(e, iframe){
+function f_fillLogin(e){
     try{
         if (employeeName !== '' && e.srcElement.value.length === 0){
             e.srcElement.value = employeeName;
             e.srcElement.removeEventListener('click', f_fillLogin);
-            let range = new Range();
-            console.log(range.selectNode(e.srcElement.firstChild.value));
-            console.log(iframe.getSelection().removeAllRanges());
-            console.log(iframe.getSelection().addRange(range));
         }
     }
     catch (error){
@@ -216,6 +212,18 @@ function f_fillLogin(e, iframe){
 
     }
 }
+
+// function f_fillTodaysDate(e){
+//     try{
+//         if (e.srcElement.value.length === 0){
+//             console.log('Clicked space ' + e.srcElement.parentNode.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Space'})));
+//         }
+//     }
+//     catch (error){
+//         console.error(error);
+
+//     }
+// }
 
 function f_fillHours(e, element, value){
     try{
@@ -299,29 +307,43 @@ let refreshInterval = setInterval(function(){
             }
 
             // name filling on click
-            let employee_name_field = iframe.getElementsByName('employee');
-            if(employee_name_field.length > 0){
-                for (let i = 0; i < employee_name_field.length; i++){
-                    if(!employee_name_field[i].classList.contains('zwyroled')){
-                        employee_name_field[i].classList.add('zwyroled');
-                        //employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
-                        employee_name_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
+            let employee_field = iframe.getElementsByName('employee');
+            if(employee_field.length > 0){
+                for (let i = 0; i < employee_field.length; i++){
+                    if(!employee_field[i].classList.contains('zwyroled')){
+                        employee_field[i].classList.add('zwyroled');
+                        employee_field[i].parentNode.addEventListener('click',f_fillLogin);
+                        //employee_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
                         //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
                     }
                 }
             }
 
-            employee_name_field = iframe.getElementsByName('assignedto');
-            if(employee_name_field.length > 0){
-                for (let i = 0; i < employee_name_field.length; i++){
-                    if(!employee_name_field[i].classList.contains('zwyroled')){
-                        employee_name_field[i].classList.add('zwyroled');
-                        //employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
-                        employee_name_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
+            let assignedto_field = iframe.getElementsByName('assignedto');
+            if(assignedto_field.length > 0){
+                for (let i = 0; i < assignedto_field.length; i++){
+                    if(!assignedto_field[i].classList.contains('zwyroled')){
+                        assignedto_field[i].classList.add('zwyroled');
+                        assignedto_field[i].parentNode.addEventListener('click',f_fillLogin);
+                        //assignedto_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
                         //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
                     }
                 }
             }
+
+            // let datework_field = iframe.getElementsByName('datework');
+            // if(datework_field.length > 0){
+            //     for (let i = 0; i < datework_field.length; i++){
+            //         if(!datework_field[i].classList.contains('zwyroled')){
+            //             datework_field[i].classList.add('zwyroled');
+            //             datework_field[i].parentNode.addEventListener('click',f_fillTodaysDate);
+            //             //datework_field[i].parentNode.addEventListener('click',(event) => f_fillLogin(event, iframe));
+            //             //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
+            //         }
+            //     }
+            // }
+
+
 
             // adding checking buttons to any grid item
             let gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body');
