@@ -5,7 +5,7 @@
 // @match			https://eam.eurme-amazon.com/web/base/COMMON*
 // @downloadURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
 // @updateURL		https://github.com/aIeksancler/EAM-Clicker/raw/main/EAM%20Clicker.user.js
-// @version			4.44
+// @version			4.45
 // @grant			none
 // @run-at			document-end
 // ==/UserScript==
@@ -274,6 +274,7 @@ let refreshInterval = setInterval(function(){
         if (!iframes[i].classList.contains('zwyroled')){
             allDocuments.push(iframes[i]);
             iframes[i].classList.add('zwyroled');
+            console.log('Added document at index ' + (allDocuments.length - 1));
         }
     }
 
@@ -283,107 +284,114 @@ let refreshInterval = setInterval(function(){
         //console.log('Zwyrolling iframe: ' + iframes[i].id);
         let iframe;
         //iframe = iframes[i].contentDocument || iframe[i].contentWindow.document;
-        if (i > 0){
-            iframe = allDocuments[i].contentDocument || allDocuments[i].contentWindow.document;
-            // console.log(iframe = allDocuments[i].contentDocument || allDocuments[i].contentWindow.document);
-        }
-        else{
-            iframe = allDocuments[0];
-            // console.log(iframe = allDocuments[0]);
-        }
+        try{
+            if (i > 0){
+                iframe = allDocuments[i].contentDocument || allDocuments[i].contentWindow.document;
+                // console.log(iframe = allDocuments[i].contentDocument || allDocuments[i].contentWindow.document);
+            }
+            else{
+                iframe = allDocuments[0];
+                // console.log(iframe = allDocuments[0]);
+            }
 
-        // name filling on click
-        let employee_name_field = iframe.getElementsByName('employee');
-        if(employee_name_field.length > 0){
-            for (let i = 0; i < employee_name_field.length; i++){
-                if(!employee_name_field[i].classList.contains('zwyroled')){
-                    employee_name_field[i].classList.add('zwyroled');
-                    employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
-                    //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
+            // name filling on click
+            let employee_name_field = iframe.getElementsByName('employee');
+            if(employee_name_field.length > 0){
+                for (let i = 0; i < employee_name_field.length; i++){
+                    if(!employee_name_field[i].classList.contains('zwyroled')){
+                        employee_name_field[i].classList.add('zwyroled');
+                        employee_name_field[i].parentNode.addEventListener('click',f_fillLogin);
+                        //console.log(document.getElementsByClassNames('x-toolbar-text dbtext x-box-item x-toolbar-item x-toolbar-text-mainmenuButton-toolbar')[0].innerText.match(re)[1]);
+                    }
                 }
             }
-        }
 
-        // adding checking buttons to any grid item
-        let gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body');
+            // adding checking buttons to any grid item
+            let gridBodies = iframe.getElementsByClassName('x-panel-body x-grid-with-row-lines x-grid-body');
 
-        for (let i = 0; i < gridBodies.length; i++){
-            if (!gridBodies[i].classList.contains('zwyroled')){
-                gridBodies[i].classList.add('zwyroled');
+            for (let i = 0; i < gridBodies.length; i++){
+                if (!gridBodies[i].classList.contains('zwyroled')){
+                    gridBodies[i].classList.add('zwyroled');
 
-                let buttons_container = document.createElement('div');
-                buttons_container.style = 'position:absolute;top:0;left:320px';
-                buttons_container.name = 'buttonsContainer';
+                    let buttons_container = document.createElement('div');
+                    buttons_container.style = 'position:absolute;top:0;left:320px';
+                    buttons_container.name = 'buttonsContainer';
 
-                // button declaration
-                let button_checkAll = document.createElement('Button');
-                button_checkAll.innerHTML = 'Check all';
-                button_checkAll.classList.add('zwyrolButton');
-                button_checkAll.style = 'right:0;top:0;position:relative;margin:10px'
-                button_checkAll.addEventListener('click',f_checkAll);
-                buttons_container.appendChild(button_checkAll);
+                    // button declaration
+                    let button_checkAll = document.createElement('Button');
+                    button_checkAll.innerHTML = 'Check all';
+                    button_checkAll.classList.add('zwyrolButton');
+                    button_checkAll.style = 'right:0;top:0;position:relative;margin:10px'
+                    button_checkAll.addEventListener('click',f_checkAll);
+                    buttons_container.appendChild(button_checkAll);
 
-                let button_uncheckAll = document.createElement('Button');
-                button_uncheckAll.innerHTML = 'Uncheck all';
-                button_uncheckAll.classList.add('zwyrolButton');
-                button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px'
-                button_uncheckAll.addEventListener('click',f_uncheckAll);
-                buttons_container.appendChild(button_uncheckAll);
+                    let button_uncheckAll = document.createElement('Button');
+                    button_uncheckAll.innerHTML = 'Uncheck all';
+                    button_uncheckAll.classList.add('zwyrolButton');
+                    button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px'
+                    button_uncheckAll.addEventListener('click',f_uncheckAll);
+                    buttons_container.appendChild(button_uncheckAll);
 
-                gridBodies[i].parentElement.firstChild.appendChild(buttons_container);
+                    gridBodies[i].parentElement.firstChild.appendChild(buttons_container);
 
-                console.log('Zwyroled gridBody ' + gridBodies[i].id + ' in iframe ' + iframe.id);
+                    console.log('Zwyroled gridBody ' + gridBodies[i].id + ' in iframe ' + iframe.id);
+                }
             }
-        }
-        let searchedFields
+            let searchedFields
 
-        // adding OT button
-        searchedFields = iframe.getElementsByName('octype')
-        for (let i = 0; i < searchedFields.length; i++){
-            let element = searchedFields[i];
-            //console.log(hoursWorkedElement.id);
-            if (element.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
+            // adding OT button
+            searchedFields = iframe.getElementsByName('octype')
+            for (let i = 0; i < searchedFields.length; i++){
+                let element = searchedFields[i];
+                //console.log(hoursWorkedElement.id);
+                if (element.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
 
-                let buttons_container = document.createElement('div');
-                buttons_container.style = 'position:relative;top:0;left:10px';
-                buttons_container.name = 'hrsButtonsContainer';
-                buttons_container.classList.add('zwyroled');
+                    let buttons_container = document.createElement('div');
+                    buttons_container.style = 'position:relative;top:0;left:10px';
+                    buttons_container.name = 'hrsButtonsContainer';
+                    buttons_container.classList.add('zwyroled');
 
-                let button = document.createElement("button");
-                button.innerHTML = '$OT$';
-                button.style = 'right:0;top:0;position:relative;margin:5px'
-
-                button.addEventListener('click',(event) => f_toggleOT(event, element));
-                buttons_container.appendChild(button);
-
-
-                element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
-            }
-        }
-
-
-        searchedFields = iframe.getElementsByName('hrswork')
-        for (let i = 0; i < searchedFields.length; i++){
-            let element = searchedFields[i];
-            //console.log(hoursWorkedElement.id);
-            if (element.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
-
-                let buttons_container = document.createElement('div');
-                buttons_container.style = 'position:relative;top:0;left:10px';
-                buttons_container.name = 'hrsButtonsContainer';
-                buttons_container.classList.add('zwyroled');
-
-                for (let i = 0; i < hours_selection.length; i++){
                     let button = document.createElement("button");
-                    button.innerHTML = hours_selection[i];
+                    button.innerHTML = '$OT$';
                     button.style = 'right:0;top:0;position:relative;margin:5px'
 
-                    button.addEventListener('click',(event) => f_fillHours(event, element, hours_selection[i]));
+                    button.addEventListener('click',(event) => f_toggleOT(event, element));
                     buttons_container.appendChild(button);
-                }
 
-                element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
+
+                    element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
+                }
             }
+
+
+            searchedFields = iframe.getElementsByName('hrswork')
+            for (let i = 0; i < searchedFields.length; i++){
+                let element = searchedFields[i];
+                //console.log(hoursWorkedElement.id);
+                if (element.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('zwyroled').length === 0){
+
+                    let buttons_container = document.createElement('div');
+                    buttons_container.style = 'position:relative;top:0;left:10px';
+                    buttons_container.name = 'hrsButtonsContainer';
+                    buttons_container.classList.add('zwyroled');
+
+                    for (let i = 0; i < hours_selection.length; i++){
+                        let button = document.createElement("button");
+                        button.innerHTML = hours_selection[i];
+                        button.style = 'right:0;top:0;position:relative;margin:5px'
+
+                        button.addEventListener('click',(event) => f_fillHours(event, element, hours_selection[i]));
+                        buttons_container.appendChild(button);
+                    }
+
+                    element.parentNode.parentNode.parentNode.parentNode.appendChild(buttons_container);
+                }
+            }
+        }
+        catch (e){
+            console.error(e);
+            console.log('Removed null document at index: ' + i);
+            allDocuments.splice(i, 1);
         }
 
         if (verse < kablociag.length) document.title = kablociag[verse];
@@ -393,3 +401,16 @@ let refreshInterval = setInterval(function(){
 
     }
 }, 1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
