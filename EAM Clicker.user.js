@@ -25,39 +25,31 @@ const hours_selection = ['-1', '-0.5', '-0.25', '+0.25', '+0.5', '+1']
 
 var grid_result_cells;
 var currentPanel;
+var currentIframe;
 
 const kablociag = ['Enterprise Asset Management',
-                   'Wypiekają chleb piekarze,',
-                   'wyrabiają stal hutnicy,',
-                   'krawcy gacie, szewcy buty,',
-                   'a my ciągnim druty.',
-                   'Hej chwyćmy kabla w dłonie,',
-                   'hej ciągmy razem w kupie,',
-                   'bo jak zabraknie prądu',
-                   'ludzkość będzie w dupie.',
-                   'Raz pod wodą, raz pod ziemią,',
-                   'raz na górze, raz w dolinie,',
-                   'ciągnij bracie, ciągnij kabla,',
-                   'bo nim prąd popłynie.',
-                   'Hej chwyćmy kabla w dłonie,',
-                   'hej ciągmy razem w kupie,',
-                   'hej ciągmy ile siły,',
-                   'reszte miejmy w dupie.',
+                   '♩ Wypiekają chleb piekarze, ♪',
+                   '♩ wyrabiają stal hutnicy, ♬',
+                   '♫ krawcy gacie, szewcy buty, ♪',
+                   '♬ a my ciągnim druty. ♩',
+                   '♪ Hej chwyćmy kabla w dłonie, ♫',
+                   '♬ hej ciągmy razem w kupie, ♬',
+                   '♩ bo jak zabraknie prądu ♩',
+                   '♫ ludzkość będzie w dupie. ♪',
+                   '♬ Raz pod wodą, raz pod ziemią, ♩',
+                   '♩ raz na górze, raz w dolinie, ♫',
+                   '♪ ciągnij bracie, ciągnij kabla, ♩',
+                   '♩ bo nim prąd popłynie. ♪',
+                   '♫ Hej chwyćmy kabla w dłonie, ♫',
+                   '♩ hej ciągmy razem w kupie, ♬',
+                   '♪ hej ciągmy ile siły, ♪',
+                   '♬ reszte miejmy w dupie. ♩',
                    'Enterprise Asset Management']
-
 
 
 
 console.log('Script Loaded');
 
-function waitForProcessing(){
-    setTimeout(function() {
-        //console.log(document.getElementsByClassName('x-mask x-border-box x-mask-fixed').length)
-        if(document.getElementsByClassName('x-mask x-border-box x-mask-fixed').length != 0){;
-                                                                                            waitForProcessing();
-                                                                                           }
-    }, 500)
-}
 
 function scrollToLast(callback){
     //console.log('Clicked')
@@ -102,6 +94,9 @@ function scrollToLast(callback){
                             // check for x == y
                             x = parseInt(records_number[0]);
                             y = parseInt(records_number[1]);
+                            if (x === 0 && y === 0){
+                                return callback(false);
+                            }
                             if (intervalTimeout === 0){
                                 intervalTimeout = y / x + 1;
                             }
@@ -109,7 +104,7 @@ function scrollToLast(callback){
 
                     }
                 }
-                console.log('x: ' + x + ' y: ' + y);
+                console.log('Records ' + x + ' of ' + y);
                 //console.log(x < y)
 
                 count++;
@@ -122,7 +117,7 @@ function scrollToLast(callback){
             }
             else{
                 clearInterval(scrollInterval);
-                return callback(false);
+                return callback(true);
             }
 
             // scroll to last element
@@ -132,17 +127,18 @@ function scrollToLast(callback){
         clearInterval(scrollInterval)
         console.error(error);
     }
+    callback();
 }
 
 function f_checkAll(e) {
     //console.log('Button parent element id: ' + event.target.parentElement.id);
-    console.log('Grid id :' + this.id);
+    console.log('Grid id: ' + this.id);
     try{
         currentPanel = e.srcElement.parentNode.parentNode.parentNode;
         console.log( typeof currentPanel !== undefined);
         if (typeof currentPanel !== 'undefined'){
             scrollToLast(function(value){
-                console.log('scrollToLast return value :' + value)
+                console.log('scrollToLast return value: ' + value)
                 if (value){
                     var count = 0;
                     var list_elements = currentPanel.getElementsByClassName('x-field x-form-item x-form-item-default x-form-type-checkbox x-box-item x-hbox-form-item');
@@ -163,11 +159,77 @@ function f_checkAll(e) {
                         }
                     }
                     console.log('Clicked: ' + count);
+
                 }
             });
         }
+        return true;
     } catch (error){
         console.error(error);
+        return false;
+    }
+}
+
+function f_checkAllWO(e, iframe) {
+    //console.log('Button parent element id: ' + event.target.parentElement.id);
+    let nextButton = iframe.getElementsByClassName('x-btn-icon-el x-btn-icon-el-default-toolbar-small toolbarNext')[0].parentNode.parentNode.parentNode;
+    let saveButton = iframe.getElementsByClassName('x-btn-icon-el x-btn-icon-el-default-toolbar-small toolbarSave')[0];
+    let processing = iframe.getElementsByClassName('x-masked');
+
+    console.log('Grid id: ' + this.id);
+    try{
+        currentPanel = e.srcElement.parentNode.parentNode.parentNode;
+        console.log( typeof currentPanel !== undefined);
+        if (typeof currentPanel !== 'undefined'){
+            scrollToLast(function(value){
+                console.log('scrollToLast return value: ' + value)
+                if (value){
+                    var count = 0;
+                    var list_elements = currentPanel.getElementsByClassName('x-field x-form-item x-form-item-default x-form-type-checkbox x-box-item x-hbox-form-item');
+
+                    for(let i = 0; i < list_elements.length; i++){
+                        var label_text = list_elements[i].textContent.trim();
+                        //console.log(label_text + ' ' +  arr_checkbox_text_to_click.includes(label_text))
+                        // check if label text is in the text to be clicked array
+                        if (arr_checkbox_text_to_click.includes(label_text)){
+                            // change element from label to checkbox
+                            // if checkbox is not checked, click it
+                            if (!list_elements[i].classList.contains('x-form-cb-checked')){
+                                count++;
+                                // click on checkbox
+                                list_elements[i].firstChild.click();
+                            }
+                            //console.log(div[i].id.replace('-labelTextEl', '-inputEl'));
+                        }
+                    }
+                    console.log('Clicked: ' + count);
+                    if (!nextButton.classList.contains('x-btn-disabled')){
+                        console.log('Next ' + nextButton.click());
+                        // waitForEAM(function(value){
+                        //     if (value){
+                        //         setInterval(console.log('Repeating ' + e.srcElement.parentNode.firstChild.click()),
+                        //                     1000);
+                        //     }
+                        // });
+                        //waitForEAM(() => console.log('Processing done'));
+                    }
+                    else{
+                        console.log('Saving last ' + saveButton.click());
+                    }
+
+                }
+
+                // console.log('Next ' + nextButton.click());
+                // if (nextButton.classList.contains('x-btn-disabled') === false){
+                //     e.srcElement.click();
+                // }
+            });
+        }
+
+        return true;
+    } catch (error){
+        console.error(error);
+        return false
     }
 }
 
@@ -193,9 +255,11 @@ function f_uncheckAll(e) {
 
             });
         }
+        return true;
     }
     catch (error){
         console.error(error);
+        return false;
     }
 }
 
@@ -294,6 +358,7 @@ let refreshInterval = setInterval(function(){
     for (let i = 0; i < allDocuments.length; i++){
         //console.log('Zwyrolling iframe: ' + iframes[i].id);
         let iframe;
+        currentIframe = iframe;
         //iframe = iframes[i].contentDocument || iframe[i].contentWindow.document;
         try{
             if (i > 0){
@@ -357,18 +422,28 @@ let refreshInterval = setInterval(function(){
 
                     // button declaration
                     let button_checkAll = document.createElement('Button');
+                    button_checkAll.name = 'Check all';
                     button_checkAll.innerHTML = 'Check all';
                     button_checkAll.classList.add('zwyrolButton');
-                    button_checkAll.style = 'right:0;top:0;position:relative;margin:10px'
+                    button_checkAll.style = 'right:0;top:0;position:relative;margin:10px 5px'
                     button_checkAll.addEventListener('click',f_checkAll);
                     buttons_container.appendChild(button_checkAll);
 
                     let button_uncheckAll = document.createElement('Button');
+                    button_uncheckAll.name = 'Uncheck all';
                     button_uncheckAll.innerHTML = 'Uncheck all';
                     button_uncheckAll.classList.add('zwyrolButton');
-                    button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px'
+                    button_uncheckAll.style = 'right;0top:0;right:0;position:relative;margin:10px 5px'
                     button_uncheckAll.addEventListener('click',f_uncheckAll);
                     buttons_container.appendChild(button_uncheckAll);
+
+                    let button_checkAllWO = document.createElement('Button');
+                    button_checkAllWO.name = 'Check&Go';
+                    button_checkAllWO.innerHTML = 'Check&Go';
+                    button_checkAllWO.classList.add('zwyrolButton');
+                    button_checkAllWO.style = 'right;0top:0;right:0;position:relative;margin:10px 5px'
+                    button_checkAllWO.addEventListener('click',(event) => f_checkAllWO(event, iframe));
+                    buttons_container.appendChild(button_checkAllWO);
 
                     gridBodies[i].parentElement.firstChild.appendChild(buttons_container);
 
@@ -416,7 +491,7 @@ let refreshInterval = setInterval(function(){
                     for (let i = 0; i < hours_selection.length; i++){
                         let button = document.createElement("button");
                         button.innerHTML = hours_selection[i];
-                        button.style = 'right:0;top:0;position:relative;margin:5px'
+                        button.style = 'right:0;top:0;position:relative;margin:5px 2px'
 
                         button.addEventListener('click',(event) => f_fillHours(event, element, hours_selection[i]));
                         buttons_container.appendChild(button);
