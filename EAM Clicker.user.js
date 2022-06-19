@@ -24,9 +24,9 @@ const arr_checkbox_text_to_click = [
 
 const hours_selection = ['-1', '-0.5', '-0.25', '+0.25', '+0.5', '+1'];
 
-var grid_result_cells;
-var currentPanel;
-var currentIframe;
+let grid_result_cells;
+let currentPanel;
+let currentIframe;
 
 const kablociag = [
   'Enterprise Asset Management',
@@ -49,18 +49,16 @@ const kablociag = [
   'Enterprise Asset Management',
 ];
 
-console.log('Script Loaded');
+
 
 function scrollToLast(callback) {
   try {
-    var load_completed = false;
-    var x,
-      y = 0;
-    var intervalTimeout = 0;
-    var count = 0;
-    var scrollInterval = setInterval(function () {
+    let x, y = 0;
+    let intervalTimeout = 0;
+    let count = 0;
+    let scrollInterval = setInterval(function () {
       // search for list elements (checklist)
-      var list_elements = currentPanel.getElementsByClassName('x-grid-item');
+      let list_elements = currentPanel.getElementsByClassName('x-grid-item');
 
       if (list_elements.length > 0) {
         list_elements[list_elements.length - 1].scrollIntoView();
