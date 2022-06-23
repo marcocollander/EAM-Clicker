@@ -49,8 +49,6 @@ const kablociag = [
   'Enterprise Asset Management',
 ];
 
-
-
 function scrollToLast(callback) {
   try {
     let x, y = 0;
@@ -268,7 +266,7 @@ function f_toggleOT(e, element) {
 }
 
 let allDocuments = [document];
-var employeeName = '';
+let employeeName = '';
 
 let getEmployeeNameInterval = setInterval(function () {
   try {
